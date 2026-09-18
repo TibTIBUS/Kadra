@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+// BASE_PATH permet de servir l'app depuis un sous-chemin (GitHub Pages : /Kadra/).
+// Netlify et le développement local restent à la racine.
 export default defineConfig({
+  base: process.env.BASE_PATH ?? '/',
   plugins: [react()],
   build: {
     target: 'es2022',

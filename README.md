@@ -20,6 +20,15 @@ npm run templates  # régénérer les 20 templates JSON
 Navigateur cible : **Chrome sur ordinateur**. Safari efface les données d'un site non visité
 pendant 7 jours — l'application l'indique et invite à exporter une sauvegarde.
 
+## Déploiement GitHub Pages
+
+Le workflow `.github/workflows/deploy-pages.yml` construit et publie `dist/` à chaque push.
+Le site est servi depuis un sous-chemin (`https://<compte>.github.io/Kadra/`) : le workflow
+passe `BASE_PATH` à Vite, et l'application utilise un routeur à hash, donc aucune règle de
+réécriture n'est nécessaire.
+
+Prérequis côté dépôt, à faire une fois : **Settings → Pages → Source : GitHub Actions**.
+
 ## Déploiement Netlify
 
 `netlify.toml` est prêt : commande `npm run build`, dossier publié `dist`, redirection SPA.
