@@ -1,0 +1,64 @@
+{
+  "id": "collage-grille-2",
+  "name": "Grille 2 photos",
+  "category": "collage",
+  "description": "Deux photos empilées, bandeau de titre entre les deux.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 960,
+        "h": 580,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 60,
+        "y": 760,
+        "w": 960,
+        "h": 530,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "t3",
+        "type": "text",
+        "x": 60,
+        "y": 676,
+        "w": 960,
+        "text": "VOTRE TITRE",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 64,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "id": "carrousel-fil-conducteur",
+  "name": "Fil conducteur",
+  "category": "carousel",
+  "description": "Une ligne menthe traverse les trois slides et relie les photos.",
+  "slideCount": 3,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 3240,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "s1",
+        "type": "shape",
+        "shape": "line",
+        "x": 0,
+        "y": 675,
+        "points": [
+          0,
+          0,
+          3240,
+          0
+        ],
+        "stroke": "#7ed6ad",
+        "strokeWidth": 10
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 960,
+        "h": 575,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c3",
+        "type": "photoCell",
+        "x": 1140,
+        "y": 715,
+        "w": 960,
+        "h": 575,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c4",
+        "type": "photoCell",
+        "x": 2220,
+        "y": 60,
+        "w": 960,
+        "h": 575,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s5",
+        "type": "shape",
+        "shape": "circle",
+        "x": 540,
+        "y": 675,
+        "r": 22,
+        "fill": "#ef8a3f"
+      },
+      {
+        "id": "s6",
+        "type": "shape",
+        "shape": "circle",
+        "x": 1620,
+        "y": 675,
+        "r": 22,
+        "fill": "#ef8a3f"
+      },
+      {
+        "id": "s7",
+        "type": "shape",
+        "shape": "circle",
+        "x": 2700,
+        "y": 675,
+        "r": 22,
+        "fill": "#ef8a3f"
+      }
+    ]
+  }
+}

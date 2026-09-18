@@ -1,0 +1,100 @@
+{
+  "id": "collage-avant-apres",
+  "name": "Avant / Après",
+  "category": "collage",
+  "description": "Deux photos côte à côte avec étiquettes.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 220,
+        "w": 468,
+        "h": 1070,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 552,
+        "y": 220,
+        "w": 468,
+        "h": 1070,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s3",
+        "type": "shape",
+        "shape": "rect",
+        "x": 60,
+        "y": 120,
+        "w": 240,
+        "h": 72,
+        "fill": "#ef8a3f",
+        "radius": 36
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 60,
+        "y": 136,
+        "w": 240,
+        "text": "AVANT",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 40,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "s5",
+        "type": "shape",
+        "shape": "rect",
+        "x": 552,
+        "y": 120,
+        "w": 240,
+        "h": 72,
+        "fill": "#7ed6ad",
+        "radius": 36
+      },
+      {
+        "id": "t6",
+        "type": "text",
+        "x": 552,
+        "y": 136,
+        "w": 240,
+        "text": "APRÈS",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 40,
+        "color": "#0f3d2e",
+        "align": "center",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

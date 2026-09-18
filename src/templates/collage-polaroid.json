@@ -1,0 +1,63 @@
+{
+  "id": "collage-polaroid",
+  "name": "Cadre polaroid",
+  "category": "collage",
+  "description": "Photo encadrée de blanc avec légende manuscrite.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "gradient",
+      "from": "#0f3d2e",
+      "to": "#111111",
+      "angle": 90
+    },
+    "elements": [
+      {
+        "id": "s1",
+        "type": "shape",
+        "shape": "rect",
+        "x": 100,
+        "y": 180,
+        "w": 880,
+        "h": 1000,
+        "fill": "#ffffff",
+        "radius": 12
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 148,
+        "y": 228,
+        "w": 784,
+        "h": 780,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "t3",
+        "type": "text",
+        "x": 148,
+        "y": 1056,
+        "w": 784,
+        "text": "Un moment Localia",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 56,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

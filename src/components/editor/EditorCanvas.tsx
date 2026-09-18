@@ -1,0 +1,428 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Konva from 'konva';
+import { Circle, Group, Image as KonvaImage, Layer, Line, Rect, Stage, Text, Transformer } from 'react-konva';
+import { useEditorStore } from '../../store/editorStore';
+import { useImages } from './useImages';
+import { computePlacement, clampOffsets, clampZoom } from '../../lib/photo';
+import { slideCountOf } from '../../lib/scene';
+import { profileGridCrop } from '../../lib/preview';
+import { palette, SAFE_MARGIN } from '../../theme';
+import type { PhotoCellElement, Scene, SceneElement } from '../../types/scene';
+
+export const ASSET_DRAG_TYPE = 'application/x-kadra-asset';
+
+interface Props {
+  cropMode: boolean;
+  zoom: number;
+  onDropAsset: (assetId: string, cellId: string) => void;
+}
+
+const hitTestCell = (scene: Scene, x: number, y: number): PhotoCellElement | undefined => {
+  const cells = scene.elements.filter((el): el is PhotoCellElement => el.type === 'photoCell');
+  return [...cells].reverse().find((cell) => x >= cell.x && x <= cell.x + cell.w && y >= cell.y && y <= cell.y + cell.h);
+};
+
+function BackgroundRect({ scene }: { scene: Scene }) {
+  if (scene.background.type === 'solid') {
+    return <Rect x={0} y={0} width={scene.width} height={scene.height} fill={scene.background.color} listening={false} />;
+  }
+  const radians = (scene.background.angle * Math.PI) / 180;
+  return (
+    <Rect
+      x={0}
+      y={0}
+      width={scene.width}
+      height={scene.height}
+      listening={false}
+      fillLinearGradientStartPoint={{ x: 0, y: 0 }}
+      fillLinearGradientEndPoint={{
+        x: Math.cos(radians) * scene.width,
+        y: Math.sin(radians) * scene.height,
+      }}
+      fillLinearGradientColorStops={[0, scene.background.from, 1, scene.background.to]}
+    />
+  );
+}
+
+export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
+  const scene = useEditorStore((state) => state.scene);
+  const assetUrls = useEditorStore((state) => state.assetUrls);
+  const selectedId = useEditorStore((state) => state.selectedId);
+  const select = useEditorStore((state) => state.select);
+  const updateElement = useEditorStore((state) => state.updateElement);
+  const commitHistory = useEditorStore((state) => state.commitHistory);
+
+  const images = useImages(assetUrls);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<Konva.Stage>(null);
+  const transformerRef = useRef<Konva.Transformer>(null);
+  const nodesRef = useRef<Map<string, Konva.Node>>(new Map());
+  const [viewport, setViewport] = useState({ width: 900, height: 700 });
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return undefined;
+    const observer = new ResizeObserver(([entry]) => {
+      if (!entry) return;
+      setViewport({ width: entry.contentRect.width - 48, height: entry.contentRect.height - 48 });
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const scale = useMemo(() => {
+    if (!scene) return 1;
+    const fit = Math.min(viewport.width / scene.width, viewport.height / scene.height);
+    return Math.max(0.02, fit * zoom);
+  }, [scene, viewport, zoom]);
+
+  // Le Transformer suit la sélection, sauf en mode recadrage où la cellule ne bouge pas.
+  useEffect(() => {
+    const transformer = transformerRef.current;
+    if (!transformer) return;
+    const node = selectedId ? nodesRef.current.get(selectedId) : undefined;
+    const isCropping = cropMode && scene?.elements.find((el) => el.id === selectedId)?.type === 'photoCell';
+    transformer.nodes(node && !isCropping ? [node] : []);
+    transformer.getLayer()?.batchDraw();
+  }, [selectedId, cropMode, scene]);
+
+  const registerNode = useCallback((id: string, node: Konva.Node | null) => {
+    if (node) nodesRef.current.set(id, node);
+    else nodesRef.current.delete(id);
+  }, []);
+
+  const scenePointer = useCallback(
+    (clientX: number, clientY: number) => {
+      const stage = stageRef.current;
+      if (!stage) return null;
+      const box = stage.container().getBoundingClientRect();
+      return { x: (clientX - box.left) / scale, y: (clientY - box.top) / scale };
+    },
+    [scale],
+  );
+
+  const handleWheel = useCallback(
+    (event: Konva.KonvaEventObject<WheelEvent>) => {
+      if (!scene || !selectedId) return;
+      const element = scene.elements.find((el) => el.id === selectedId);
+      if (!element || element.type !== 'photoCell' || !element.assetId) return;
+      event.evt.preventDefault();
+
+      const image = images.get(element.assetId);
+      const nextScale = clampZoom((element.crop.scale ?? 1) * (event.evt.deltaY > 0 ? 0.94 : 1.06));
+      const candidate: PhotoCellElement = { ...element, crop: { ...element.crop, scale: nextScale } };
+      const offsets = image
+        ? clampOffsets(candidate, image.naturalWidth, image.naturalHeight, element.crop.offsetX, element.crop.offsetY)
+        : { offsetX: element.crop.offsetX, offsetY: element.crop.offsetY };
+
+      updateElement(selectedId, { crop: { scale: nextScale, ...offsets } } as Partial<SceneElement>, {
+        history: false,
+      });
+    },
+    [scene, selectedId, images, updateElement],
+  );
+
+  if (!scene) return <div className="editor__stage" ref={containerRef} />;
+
+  const slides = slideCountOf(scene);
+  const gridCrop = profileGridCrop(scene);
+
+  return (
+    <div
+      className="editor__stage"
+      ref={containerRef}
+      onDragOver={(event) => {
+        if (event.dataTransfer.types.includes(ASSET_DRAG_TYPE)) event.preventDefault();
+      }}
+      onDrop={(event) => {
+        const assetId = event.dataTransfer.getData(ASSET_DRAG_TYPE);
+        if (!assetId) return;
+        event.preventDefault();
+        const point = scenePointer(event.clientX, event.clientY);
+        if (!point) return;
+        const cell = hitTestCell(scene, point.x, point.y);
+        if (cell) onDropAsset(assetId, cell.id);
+      }}
+    >
+      <Stage
+        ref={stageRef}
+        width={scene.width * scale}
+        height={scene.height * scale}
+        scaleX={scale}
+        scaleY={scale}
+        onWheel={handleWheel}
+        onMouseDown={(event) => {
+          if (event.target === event.target.getStage()) select(null);
+        }}
+        style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5)' }}
+      >
+        <Layer>
+          <BackgroundRect scene={scene} />
+
+          {scene.elements.map((element) => {
+            if (element.type === 'photoCell') {
+              const image = element.assetId ? images.get(element.assetId) : undefined;
+              const local: PhotoCellElement = { ...element, x: 0, y: 0 };
+              const placement = image
+                ? computePlacement(local, image.naturalWidth, image.naturalHeight)
+                : { x: 0, y: 0, width: element.w, height: element.h };
+              const isCropping = cropMode && selectedId === element.id && Boolean(image);
+
+              return (
+                <Group
+                  key={element.id}
+                  ref={(node) => registerNode(element.id, node)}
+                  x={element.x}
+                  y={element.y}
+                  draggable={!isCropping}
+                  onClick={() => select(element.id)}
+                  onTap={() => select(element.id)}
+                  onDragEnd={(event) =>
+                    updateElement(element.id, { x: event.target.x(), y: event.target.y() })
+                  }
+                  onTransformEnd={(event) => {
+                    const node = event.target;
+                    updateElement(element.id, {
+                      x: node.x(),
+                      y: node.y(),
+                      w: Math.max(40, element.w * node.scaleX()),
+                      h: Math.max(40, element.h * node.scaleY()),
+                    });
+                    node.scaleX(1);
+                    node.scaleY(1);
+                  }}
+                  clipFunc={(ctx) => {
+                    const radius = Math.min(element.radius ?? 0, element.w / 2, element.h / 2);
+                    ctx.beginPath();
+                    ctx.moveTo(radius, 0);
+                    ctx.arcTo(element.w, 0, element.w, element.h, radius);
+                    ctx.arcTo(element.w, element.h, 0, element.h, radius);
+                    ctx.arcTo(0, element.h, 0, 0, radius);
+                    ctx.arcTo(0, 0, element.w, 0, radius);
+                    ctx.closePath();
+                  }}
+                >
+                  {image ? (
+                    <KonvaImage
+                      image={image}
+                      x={placement.x}
+                      y={placement.y}
+                      width={placement.width}
+                      height={placement.height}
+                      draggable={isCropping}
+                      onDragMove={(event) => {
+                        const base = computePlacement(
+                          { ...local, crop: { ...element.crop, offsetX: 0, offsetY: 0 } },
+                          image.naturalWidth,
+                          image.naturalHeight,
+                        );
+                        const offsets = clampOffsets(
+                          local,
+                          image.naturalWidth,
+                          image.naturalHeight,
+                          event.target.x() - base.x,
+                          event.target.y() - base.y,
+                        );
+                        event.target.x(base.x + offsets.offsetX);
+                        event.target.y(base.y + offsets.offsetY);
+                        updateElement(
+                          element.id,
+                          { crop: { ...element.crop, ...offsets } } as Partial<SceneElement>,
+                          { history: false },
+                        );
+                      }}
+                      onDragEnd={() => commitHistory()}
+                    />
+                  ) : (
+                    <>
+                      <Rect width={element.w} height={element.h} fill="rgba(255,255,255,0.07)" />
+                      <Text
+                        width={element.w}
+                        y={element.h / 2 - 16}
+                        align="center"
+                        text="Déposez une photo"
+                        fontFamily="Poppins"
+                        fontSize={Math.max(18, Math.min(32, element.w / 12))}
+                        fill="rgba(255,255,255,0.45)"
+                        listening={false}
+                      />
+                    </>
+                  )}
+                </Group>
+              );
+            }
+
+            if (element.type === 'text') {
+              return (
+                <Text
+                  key={element.id}
+                  ref={(node) => registerNode(element.id, node)}
+                  x={element.x}
+                  y={element.y}
+                  width={element.w}
+                  text={element.text}
+                  fontFamily={element.font}
+                  fontSize={element.size}
+                  fontStyle={String(element.weight)}
+                  fill={element.color}
+                  align={element.align}
+                  lineHeight={element.lineHeight ?? 1.2}
+                  letterSpacing={element.letterSpacing ?? 0}
+                  wrap="word"
+                  draggable
+                  onClick={() => select(element.id)}
+                  onTap={() => select(element.id)}
+                  onDragEnd={(event) =>
+                    updateElement(element.id, { x: event.target.x(), y: event.target.y() })
+                  }
+                  onTransformEnd={(event) => {
+                    const node = event.target;
+                    updateElement(element.id, {
+                      x: node.x(),
+                      y: node.y(),
+                      w: Math.max(80, element.w * node.scaleX()),
+                    });
+                    node.scaleX(1);
+                    node.scaleY(1);
+                  }}
+                />
+              );
+            }
+
+            const commonHandlers = {
+              draggable: true,
+              onClick: () => select(element.id),
+              onTap: () => select(element.id),
+              onDragEnd: (event: Konva.KonvaEventObject<DragEvent>) =>
+                updateElement(element.id, { x: event.target.x(), y: event.target.y() }),
+            };
+
+            if (element.shape === 'circle') {
+              return (
+                <Circle
+                  key={element.id}
+                  ref={(node) => registerNode(element.id, node)}
+                  x={element.x}
+                  y={element.y}
+                  radius={element.r ?? 40}
+                  fill={element.fill}
+                  opacity={element.opacity ?? 1}
+                  {...commonHandlers}
+                  onTransformEnd={(event) => {
+                    const node = event.target;
+                    updateElement(element.id, {
+                      x: node.x(),
+                      y: node.y(),
+                      r: Math.max(8, (element.r ?? 40) * node.scaleX()),
+                    });
+                    node.scaleX(1);
+                    node.scaleY(1);
+                  }}
+                />
+              );
+            }
+
+            if (element.shape === 'line') {
+              return (
+                <Line
+                  key={element.id}
+                  ref={(node) => registerNode(element.id, node)}
+                  x={element.x}
+                  y={element.y}
+                  points={element.points ?? [0, 0, 200, 0]}
+                  stroke={element.stroke ?? element.fill ?? palette.menthe}
+                  strokeWidth={element.strokeWidth ?? 8}
+                  lineCap="round"
+                  hitStrokeWidth={Math.max(24, element.strokeWidth ?? 8)}
+                  opacity={element.opacity ?? 1}
+                  {...commonHandlers}
+                />
+              );
+            }
+
+            return (
+              <Rect
+                key={element.id}
+                ref={(node) => registerNode(element.id, node)}
+                x={element.x}
+                y={element.y}
+                width={element.w ?? 100}
+                height={element.h ?? 100}
+                cornerRadius={element.radius ?? 0}
+                fill={element.fill}
+                opacity={element.opacity ?? 1}
+                {...commonHandlers}
+                onTransformEnd={(event) => {
+                  const node = event.target;
+                  updateElement(element.id, {
+                    x: node.x(),
+                    y: node.y(),
+                    w: Math.max(10, (element.w ?? 100) * node.scaleX()),
+                    h: Math.max(10, (element.h ?? 100) * node.scaleY()),
+                  });
+                  node.scaleX(1);
+                  node.scaleY(1);
+                }}
+              />
+            );
+          })}
+        </Layer>
+
+        {/* Repères d'édition : jamais présents à l'export, qui utilise un rendu dédié. */}
+        <Layer listening={false}>
+          {Array.from({ length: slides }, (_, index) => (
+            <Rect
+              key={`safe-${index}`}
+              x={index * scene.slideWidth + SAFE_MARGIN}
+              y={SAFE_MARGIN}
+              width={scene.slideWidth - SAFE_MARGIN * 2}
+              height={scene.height - SAFE_MARGIN * 2}
+              stroke="rgba(255,255,255,0.28)"
+              strokeWidth={2 / scale}
+              dash={[10 / scale, 10 / scale]}
+            />
+          ))}
+
+          <Rect
+            x={0}
+            y={0}
+            width={gridCrop.x}
+            height={scene.height}
+            fill="rgba(239,138,63,0.18)"
+          />
+          <Rect
+            x={gridCrop.x + gridCrop.width}
+            y={0}
+            width={scene.slideWidth - gridCrop.x - gridCrop.width}
+            height={scene.height}
+            fill="rgba(239,138,63,0.18)"
+          />
+
+          {Array.from({ length: Math.max(0, slides - 1) }, (_, index) => (
+            <Line
+              key={`cut-${index}`}
+              points={[(index + 1) * scene.slideWidth, 0, (index + 1) * scene.slideWidth, scene.height]}
+              stroke={palette.menthe}
+              strokeWidth={3 / scale}
+              dash={[18 / scale, 14 / scale]}
+            />
+          ))}
+        </Layer>
+
+        <Layer>
+          <Transformer
+            ref={transformerRef}
+            rotateEnabled={false}
+            borderStroke={palette.menthe}
+            anchorStroke={palette.menthe}
+            anchorFill={palette.blanc}
+            anchorSize={10 / scale}
+            borderStrokeWidth={2 / scale}
+            ignoreStroke
+            boundBoxFunc={(oldBox, newBox) => (newBox.width < 20 || newBox.height < 20 ? oldBox : newBox)}
+          />
+        </Layer>
+      </Stage>
+    </div>
+  );
+}

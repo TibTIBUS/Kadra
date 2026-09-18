@@ -1,0 +1,128 @@
+{
+  "id": "carrousel-recap-cta",
+  "name": "Récap final + CTA",
+  "category": "carousel",
+  "description": "Trois slides de contenu et une slide d'appel à l'action.",
+  "slideCount": 4,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 4320,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 1140,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c3",
+        "type": "photoCell",
+        "x": 2220,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s4",
+        "type": "shape",
+        "shape": "rect",
+        "x": 3240,
+        "y": 0,
+        "w": 1080,
+        "h": 1350,
+        "fill": "#7ed6ad",
+        "radius": 0
+      },
+      {
+        "id": "t5",
+        "type": "text",
+        "x": 3300,
+        "y": 420,
+        "w": 960,
+        "text": "ON EN PARLE ?",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 96,
+        "color": "#0f3d2e",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "s6",
+        "type": "shape",
+        "shape": "rect",
+        "x": 3300,
+        "y": 700,
+        "w": 520,
+        "h": 110,
+        "fill": "#ef8a3f",
+        "radius": 55
+      },
+      {
+        "id": "t7",
+        "type": "text",
+        "x": 3300,
+        "y": 732,
+        "w": 520,
+        "text": "Écrivez-nous",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 44,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "t8",
+        "type": "text",
+        "x": 3300,
+        "y": 900,
+        "w": 960,
+        "text": "localia.fr",
+        "font": "Poppins",
+        "weight": 400,
+        "size": 40,
+        "color": "#0f3d2e",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

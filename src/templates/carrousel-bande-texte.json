@@ -1,0 +1,63 @@
+{
+  "id": "carrousel-bande-texte",
+  "name": "Bande de texte continue",
+  "category": "carousel",
+  "description": "Un titre qui court sur toute la largeur du carrousel.",
+  "slideCount": 3,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 3240,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "gradient",
+      "from": "#0f3d2e",
+      "to": "#111111",
+      "angle": 0
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 3120,
+        "h": 760,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "t2",
+        "type": "text",
+        "x": 60,
+        "y": 880,
+        "w": 3120,
+        "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 120,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.05
+      },
+      {
+        "id": "s3",
+        "type": "shape",
+        "shape": "rect",
+        "x": 60,
+        "y": 1150,
+        "w": 3120,
+        "h": 6,
+        "fill": "#ef8a3f",
+        "radius": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "id": "collage-plein-cadre",
+  "name": "Photo plein cadre + texte",
+  "category": "collage",
+  "description": "Une photo pleine page et un bloc de texte en bas.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#111111"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1350,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s2",
+        "type": "shape",
+        "shape": "rect",
+        "x": 0,
+        "y": 930,
+        "w": 1080,
+        "h": 420,
+        "fill": "rgba(15,61,46,0.85)",
+        "radius": 0
+      },
+      {
+        "id": "t3",
+        "type": "text",
+        "x": 60,
+        "y": 990,
+        "w": 960,
+        "text": "UN TITRE FORT",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 84,
+        "color": "#ffffff",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 60,
+        "y": 1120,
+        "w": 960,
+        "text": "Une phrase de contexte, courte et claire.",
+        "font": "Poppins",
+        "weight": 400,
+        "size": 40,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "id": "carrousel-titre-galerie",
+  "name": "Titre + galerie",
+  "category": "carousel",
+  "description": "Une slide de titre puis trois slides de photos.",
+  "slideCount": 4,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 4320,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "t1",
+        "type": "text",
+        "x": 60,
+        "y": 420,
+        "w": 960,
+        "text": "NOTRE\nSÉLECTION",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 110,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "t2",
+        "type": "text",
+        "x": 60,
+        "y": 760,
+        "w": 960,
+        "text": "Swipez pour découvrir",
+        "font": "Poppins",
+        "weight": 400,
+        "size": 40,
+        "color": "#ffffff",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "s3",
+        "type": "shape",
+        "shape": "rect",
+        "x": 60,
+        "y": 700,
+        "w": 160,
+        "h": 8,
+        "fill": "#ef8a3f",
+        "radius": 0
+      },
+      {
+        "id": "c4",
+        "type": "photoCell",
+        "x": 1140,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c5",
+        "type": "photoCell",
+        "x": 2220,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c6",
+        "type": "photoCell",
+        "x": 3300,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      }
+    ]
+  }
+}

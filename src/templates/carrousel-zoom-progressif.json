@@ -1,0 +1,106 @@
+{
+  "id": "carrousel-zoom-progressif",
+  "name": "Zoom progressif",
+  "category": "carousel",
+  "description": "Trois cadrages de plus en plus serrés sur la même scène.",
+  "slideCount": 3,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 3240,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 180,
+        "y": 210,
+        "w": 720,
+        "h": 930,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 1200,
+        "y": 140,
+        "w": 840,
+        "h": 1070,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c3",
+        "type": "photoCell",
+        "x": 2220,
+        "y": 60,
+        "w": 960,
+        "h": 1230,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 180,
+        "y": 1220,
+        "w": 600,
+        "text": "Large",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 40,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "t5",
+        "type": "text",
+        "x": 1200,
+        "y": 1220,
+        "w": 600,
+        "text": "Moyen",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 40,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "t6",
+        "type": "text",
+        "x": 2220,
+        "y": 1220,
+        "w": 600,
+        "text": "Serré",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 40,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

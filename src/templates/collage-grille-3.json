@@ -1,0 +1,78 @@
+{
+  "id": "collage-grille-3",
+  "name": "Grille 3 photos",
+  "category": "collage",
+  "description": "Une photo large au-dessus, deux vignettes en dessous.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#0f3d2e"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 960,
+        "h": 760,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 60,
+        "y": 844,
+        "w": 468,
+        "h": 420,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c3",
+        "type": "photoCell",
+        "x": 552,
+        "y": 844,
+        "w": 468,
+        "h": 420,
+        "radius": 24,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 60,
+        "y": 1288,
+        "w": 960,
+        "text": "Localia · Normandie",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 40,
+        "color": "#7ed6ad",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

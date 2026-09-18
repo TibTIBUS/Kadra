@@ -1,0 +1,79 @@
+{
+  "id": "collage-split-diagonal",
+  "name": "Split diagonal",
+  "category": "collage",
+  "description": "Deux photos séparées par une diagonale.",
+  "slideCount": 1,
+  "formats": [
+    "collage_portrait",
+    "collage_square"
+  ],
+  "scene": {
+    "width": 1080,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#111111"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 700,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 0,
+        "y": 700,
+        "w": 1080,
+        "h": 650,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s3",
+        "type": "shape",
+        "shape": "line",
+        "x": 0,
+        "y": 700,
+        "points": [
+          0,
+          40,
+          1080,
+          -40
+        ],
+        "stroke": "#ef8a3f",
+        "strokeWidth": 14
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 60,
+        "y": 1110,
+        "w": 960,
+        "text": "Avant / après",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 56,
+        "color": "#ffffff",
+        "align": "left",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}

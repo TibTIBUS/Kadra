@@ -1,0 +1,92 @@
+{
+  "id": "carrousel-mosaique-continue",
+  "name": "Mosaïque continue",
+  "category": "carousel",
+  "description": "Une mosaïque de photos qui ne s'interrompt pas entre les slides.",
+  "slideCount": 3,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 3240,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#111111"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 60,
+        "y": 60,
+        "w": 700,
+        "h": 620,
+        "radius": 16,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 784,
+        "y": 60,
+        "w": 1672,
+        "h": 620,
+        "radius": 16,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c3",
+        "type": "photoCell",
+        "x": 2480,
+        "y": 60,
+        "w": 700,
+        "h": 620,
+        "radius": 16,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c4",
+        "type": "photoCell",
+        "x": 60,
+        "y": 704,
+        "w": 900,
+        "h": 586,
+        "radius": 16,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c5",
+        "type": "photoCell",
+        "x": 984,
+        "y": 704,
+        "w": 2196,
+        "h": 586,
+        "radius": 16,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      }
+    ]
+  }
+}

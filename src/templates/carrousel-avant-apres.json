@@ -1,0 +1,100 @@
+{
+  "id": "carrousel-avant-apres",
+  "name": "Avant / après sur 2 slides",
+  "category": "carousel",
+  "description": "Une slide avant, une slide après, séparées par la découpe.",
+  "slideCount": 2,
+  "formats": [
+    "carousel_portrait",
+    "carousel_square"
+  ],
+  "scene": {
+    "width": 2160,
+    "height": 1350,
+    "slideWidth": 1080,
+    "background": {
+      "type": "solid",
+      "color": "#111111"
+    },
+    "elements": [
+      {
+        "id": "c1",
+        "type": "photoCell",
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1350,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "c2",
+        "type": "photoCell",
+        "x": 1080,
+        "y": 0,
+        "w": 1080,
+        "h": 1350,
+        "radius": 0,
+        "crop": {
+          "offsetX": 0,
+          "offsetY": 0,
+          "scale": 1
+        }
+      },
+      {
+        "id": "s3",
+        "type": "shape",
+        "shape": "rect",
+        "x": 60,
+        "y": 60,
+        "w": 280,
+        "h": 80,
+        "fill": "#ef8a3f",
+        "radius": 40
+      },
+      {
+        "id": "t4",
+        "type": "text",
+        "x": 60,
+        "y": 78,
+        "w": 280,
+        "text": "AVANT",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 44,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.15
+      },
+      {
+        "id": "s5",
+        "type": "shape",
+        "shape": "rect",
+        "x": 1140,
+        "y": 60,
+        "w": 280,
+        "h": 80,
+        "fill": "#7ed6ad",
+        "radius": 40
+      },
+      {
+        "id": "t6",
+        "type": "text",
+        "x": 1140,
+        "y": 78,
+        "w": 280,
+        "text": "APRÈS",
+        "font": "Poppins",
+        "weight": 800,
+        "size": 44,
+        "color": "#0f3d2e",
+        "align": "center",
+        "lineHeight": 1.15
+      }
+    ]
+  }
+}
