@@ -18,7 +18,20 @@ npm run templates  # régénérer les 20 templates JSON
 ```
 
 Navigateur cible : **Chrome sur ordinateur**. Safari efface les données d'un site non visité
-pendant 7 jours — l'application l'indique et invite à exporter une sauvegarde.
+pendant 7 jours — l'application l'indique et invite à exporter une sauvegarde. C'est une limite
+du navigateur, pas de l'app : elle s'applique aussi à Safari sur iPhone et iPad.
+
+### Smartphones et tablettes
+
+En dessous de 900 px de large, l'éditeur passe en disposition tactile : une seule colonne
+(barre d'outils défilante, plan de travail, barre d'actions en bas), les deux panneaux
+devenant des feuilles escamotables. Au-delà, la disposition à trois colonnes est conservée.
+
+Le glisser-déposer HTML5 n'existe pas sur iOS : on touche une photo pour l'armer, puis la
+cellule qui doit la recevoir. Le recadrage se fait au doigt, avec pincement à deux doigts
+pour le zoom. Les zones sûres de l'encoche et de la barre de gestes sont respectées
+(`viewport-fit=cover` + `env(safe-area-inset-*)`), et les hauteurs utilisent `dvh` pour ne
+pas être faussées par la barre d'URL de Safari.
 
 ## Déploiement GitHub Pages
 

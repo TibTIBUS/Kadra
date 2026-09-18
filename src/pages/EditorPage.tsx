@@ -5,10 +5,11 @@ import PhotoPanel from '../components/editor/PhotoPanel';
 import InspectorPanel from '../components/editor/InspectorPanel';
 import PreviewModal from '../components/editor/PreviewModal';
 import ExportDialog from '../components/editor/ExportDialog';
+import AddElementBar from '../components/editor/AddElementBar';
+import { useMediaQuery, MOBILE_QUERY } from '../lib/useMediaQuery';
 import { useToast } from '../components/ui/Toast';
 import { useEditorStore } from '../store/editorStore';
-import { createShape, createText, DEFAULT_CROP, slideIndexOf } from '../lib/scene';
-import { palette, SAFE_MARGIN } from '../theme';
+import { DEFAULT_CROP } from '../lib/scene';
 import { exportProjectArchive, PROJECT_FILE_EXTENSION } from '../lib/backup';
 import { downloadBlob, slugify } from '../lib/export';
 import type { SceneElement } from '../types/scene';
@@ -37,7 +38,6 @@ export default function EditorPage() {
   const undo = useEditorStore((state) => state.undo);
   const redo = useEditorStore((state) => state.redo);
   const save = useEditorStore((state) => state.save);
-  const addElement = useEditorStore((state) => state.addElement);
   const updateElement = useEditorStore((state) => state.updateElement);
   const selectedId = useEditorStore((state) => state.selectedId);
   const removeElement = useEditorStore((state) => state.removeElement);
@@ -46,6 +46,8 @@ export default function EditorPage() {
   const [zoom, setZoom] = useState(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const isMobile = useMediaQuery(MOBILE_QUERY);
+  const [sheet, setSheet] = useState<'photos' | 'composition' | null>(null);
 
   useEffect(() => {
     if (projectId) void loadProject(projectId);
@@ -75,12 +77,15 @@ export default function EditorPage() {
     return () => window.removeEventListener('keydown', onKey);
   }, [undo, redo, save, selectedId, removeElement]);
 
-  const currentSlideOrigin = useCallback(() => {
-    if (!scene) return 0;
-    const focus = selectedId ? scene.elements.find((element) => element.id === selectedId) : undefined;
-    const index = focus ? slideIndexOf(scene, 'x' in focus ? focus.x : 0) : 0;
-    return index * scene.slideWidth;
-  }, [scene, selectedId]);
+  const openPreview = useCallback(async () => {
+    await save();
+    setPreviewOpen(true);
+  }, [save]);
+
+  const openExport = useCallback(async () => {
+    await save();
+    setExportOpen(true);
+  }, [save]);
 
   const handleDropAsset = useCallback(
     (assetId: string, cellId: string) => {
@@ -99,7 +104,7 @@ export default function EditorPage() {
   }
 
   return (
-    <div className="editor">
+    <div className={`editor${isMobile ? ' editor--mobile' : ''}`}>
       <div className="editor__toolbar">
         <button type="button" className="btn btn--sm btn--ghost" onClick={() => navigate('/')}>
           ← Projets
@@ -130,83 +135,26 @@ export default function EditorPage() {
           ↷
         </button>
 
-        <button
-          type="button"
-          className="btn btn--sm"
-          onClick={() =>
-            addElement(
-              createText({
-                x: currentSlideOrigin() + SAFE_MARGIN,
-                y: scene.height / 2 - 60,
-                w: scene.slideWidth - SAFE_MARGIN * 2,
-              }),
-            )
-          }
-        >
-          + Texte
-        </button>
-        <button
-          type="button"
-          className="btn btn--sm"
-          onClick={() =>
-            addElement(
-              createShape({
-                x: currentSlideOrigin() + SAFE_MARGIN,
-                y: SAFE_MARGIN,
-                w: 320,
-                h: 200,
-                fill: palette.orange,
-                radius: 16,
-              }),
-            )
-          }
-        >
-          + Rectangle
-        </button>
-        <button
-          type="button"
-          className="btn btn--sm"
-          onClick={() =>
-            addElement(
-              createShape({
-                shape: 'circle',
-                x: currentSlideOrigin() + scene.slideWidth / 2,
-                y: scene.height / 2,
-                r: 120,
-                fill: palette.menthe,
-              }),
-            )
-          }
-        >
-          + Cercle
-        </button>
-        <button
-          type="button"
-          className="btn btn--sm"
-          onClick={() =>
-            addElement(
-              createShape({
-                shape: 'line',
-                x: currentSlideOrigin() + SAFE_MARGIN,
-                y: scene.height / 2,
-                points: [0, 0, scene.slideWidth - SAFE_MARGIN * 2, 0],
-                stroke: palette.menthe,
-                strokeWidth: 10,
-              }),
-            )
-          }
-        >
-          + Ligne
-        </button>
+        {!isMobile ? <AddElementBar /> : null}
 
         <span className="row" style={{ gap: 4 }}>
-          <button type="button" className="btn btn--sm" onClick={() => setZoom((z) => Math.max(0.3, z - 0.15))}>
+          <button
+            type="button"
+            className="btn btn--sm"
+            onClick={() => setZoom((z) => Math.max(0.3, z - 0.15))}
+            aria-label="Réduire l'affichage"
+          >
             −
           </button>
           <span className="muted" style={{ width: 46, textAlign: 'center' }}>
             {Math.round(zoom * 100)} %
           </span>
-          <button type="button" className="btn btn--sm" onClick={() => setZoom((z) => Math.min(4, z + 0.15))}>
+          <button
+            type="button"
+            className="btn btn--sm"
+            onClick={() => setZoom((z) => Math.min(4, z + 0.15))}
+            aria-label="Agrandir l'affichage"
+          >
             +
           </button>
         </span>
@@ -221,33 +169,95 @@ export default function EditorPage() {
             toast('Projet sauvegardé en .kadra');
           }}
         >
-          Sauvegarder .kadra
+          {isMobile ? '.kadra' : 'Sauvegarder .kadra'}
         </button>
-        <button
-          type="button"
-          className="btn btn--sm"
-          onClick={async () => {
-            await save();
-            setPreviewOpen(true);
-          }}
-        >
-          Aperçu
-        </button>
-        <button
-          type="button"
-          className="btn btn--accent"
-          onClick={async () => {
-            await save();
-            setExportOpen(true);
-          }}
-        >
-          Exporter
-        </button>
+        {!isMobile ? (
+          <>
+            <button type="button" className="btn btn--sm" onClick={openPreview}>
+              Aperçu
+            </button>
+            <button type="button" className="btn btn--accent" onClick={openExport}>
+              Exporter
+            </button>
+          </>
+        ) : null}
       </div>
 
-      <PhotoPanel />
+      {!isMobile ? <PhotoPanel /> : null}
       <EditorCanvas cropMode={cropMode} zoom={zoom} onDropAsset={handleDropAsset} />
-      <InspectorPanel cropMode={cropMode} onCropMode={setCropMode} />
+      {!isMobile ? (
+        <InspectorPanel cropMode={cropMode} onCropMode={setCropMode} />
+      ) : null}
+
+      {isMobile ? (
+        <>
+          <nav className="tabbar">
+            <button
+              type="button"
+              className="tabbar__btn"
+              aria-pressed={sheet === 'photos'}
+              onClick={() => setSheet(sheet === 'photos' ? null : 'photos')}
+            >
+              Photos
+            </button>
+            <button
+              type="button"
+              className="tabbar__btn"
+              aria-pressed={sheet === 'composition'}
+              onClick={() => setSheet(sheet === 'composition' ? null : 'composition')}
+            >
+              Composition
+            </button>
+            <button
+              type="button"
+              className="tabbar__btn"
+              onClick={() => {
+                setSheet(null);
+                void openPreview();
+              }}
+            >
+              Aperçu
+            </button>
+            <button
+              type="button"
+              className="tabbar__btn tabbar__btn--accent"
+              onClick={() => {
+                setSheet(null);
+                void openExport();
+              }}
+            >
+              Exporter
+            </button>
+          </nav>
+
+          {sheet ? (
+            <div
+              className="sheet-backdrop"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) setSheet(null);
+              }}
+            >
+              <div className="sheet" role="dialog" aria-label={sheet === 'photos' ? 'Photos' : 'Composition'}>
+                <div className="sheet__handle">
+                  <button
+                    type="button"
+                    className="btn btn--sm btn--ghost"
+                    onClick={() => setSheet(null)}
+                    aria-label="Fermer le panneau"
+                  >
+                    ▾
+                  </button>
+                </div>
+                {sheet === 'photos' ? (
+                  <PhotoPanel />
+                ) : (
+                  <InspectorPanel cropMode={cropMode} onCropMode={setCropMode} showAddElements />
+                )}
+              </div>
+            </div>
+          ) : null}
+        </>
+      ) : null}
 
       {previewOpen ? (
         <PreviewModal

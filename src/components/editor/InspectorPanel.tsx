@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import AddElementBar from './AddElementBar';
 import { useEditorStore } from '../../store/editorStore';
 import { swatches, fontWeights, fontWeightLabels, palette, type FontWeight } from '../../theme';
 import { slideCountOf, textsCrossingCut } from '../../lib/scene';
@@ -35,7 +36,14 @@ function ColorRow({
   );
 }
 
-export default function InspectorPanel({ cropMode, onCropMode }: { cropMode: boolean; onCropMode: (value: boolean) => void }) {
+interface InspectorPanelProps {
+  cropMode: boolean;
+  onCropMode: (value: boolean) => void;
+  /** Au doigt, la barre d'outils est réduite : les ajouts vivent ici. */
+  showAddElements?: boolean;
+}
+
+export default function InspectorPanel({ cropMode, onCropMode, showAddElements }: InspectorPanelProps) {
   const project = useEditorStore((state) => state.project);
   const scene = useEditorStore((state) => state.scene);
   const selectedId = useEditorStore((state) => state.selectedId);
@@ -61,6 +69,15 @@ export default function InspectorPanel({ cropMode, onCropMode }: { cropMode: boo
   return (
     <aside className="editor__panel editor__panel--right">
       <h2 className="panel-title">Composition</h2>
+
+      {showAddElements ? (
+        <div className="field">
+          <label>Ajouter</label>
+          <div className="row" style={{ flexWrap: 'wrap' }}>
+            <AddElementBar />
+          </div>
+        </div>
+      ) : null}
 
       {spec.isCarousel ? (
         <div className="field">

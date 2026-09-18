@@ -15,6 +15,8 @@ export default function PhotoPanel() {
   const selectedId = useEditorStore((state) => state.selectedId);
   const refreshAssets = useEditorStore((state) => state.refreshAssets);
   const updateElement = useEditorStore((state) => state.updateElement);
+  const pendingAssetId = useEditorStore((state) => state.pendingAssetId);
+  const setPendingAsset = useEditorStore((state) => state.setPendingAsset);
 
   const toast = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,12 +69,18 @@ export default function PhotoPanel() {
     }
   };
 
-  const assignToSelection = (assetId: string) => {
-    if (!selectedCell) {
-      toast('Sélectionnez d\'abord une cellule photo');
+  /**
+   * Le glisser-déposer HTML5 n'existe pas sur iOS : toucher une photo l'arme,
+   * la cellule touchée ensuite la reçoit. Si une cellule est déjà sélectionnée,
+   * la photo y va directement.
+   */
+  const pickPhoto = (assetId: string) => {
+    if (selectedCell) {
+      updateElement(selectedCell.id, { assetId, crop: { ...DEFAULT_CROP } } as Partial<SceneElement>);
+      setPendingAsset(null);
       return;
     }
-    updateElement(selectedCell.id, { assetId, crop: { ...DEFAULT_CROP } } as Partial<SceneElement>);
+    setPendingAsset(pendingAssetId === assetId ? null : assetId);
   };
 
   return (
@@ -155,20 +163,24 @@ export default function PhotoPanel() {
             key={asset.id}
             className="photo-item"
             draggable
-            title={`${asset.name} — glissez-la dans une cellule`}
+            title={`${asset.name} — touchez-la puis touchez une cellule`}
+            aria-selected={pendingAssetId === asset.id}
+            onClick={() => pickPhoto(asset.id)}
             onDragStart={(event) => {
               event.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
               event.dataTransfer.effectAllowed = 'copy';
+              setPendingAsset(null);
             }}
-            onDoubleClick={() => assignToSelection(asset.id)}
           >
             <img src={assetUrls[asset.id]} alt={asset.name} />
             <button
               type="button"
               className="photo-item__remove"
               title="Retirer du projet"
+              aria-label={`Retirer ${asset.name}`}
               onClick={async (event) => {
                 event.stopPropagation();
+                if (pendingAssetId === asset.id) setPendingAsset(null);
                 await assetRepository.remove(asset.id);
                 await refreshAssets();
               }}
@@ -181,8 +193,9 @@ export default function PhotoPanel() {
 
       {assets.length ? (
         <p className="hint" style={{ marginTop: 12 }}>
-          Glissez une photo dans une cellule, ou double-cliquez pour la placer dans la cellule
-          sélectionnée.
+          {pendingAssetId
+            ? 'Photo prête : touchez maintenant une cellule de la composition.'
+            : 'Touchez une photo puis une cellule pour la placer. À la souris, vous pouvez aussi la glisser directement.'}
         </p>
       ) : null}
     </aside>

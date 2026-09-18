@@ -19,6 +19,8 @@ interface EditorState {
   assetUrls: Record<string, string>;
   images: Map<string, HTMLImageElement>;
   selectedId: string | null;
+  /** Photo « armée » au doigt : la prochaine cellule touchée la recevra. */
+  pendingAssetId: string | null;
   past: Scene[];
   future: Scene[];
   saveState: SaveState;
@@ -29,6 +31,9 @@ interface EditorState {
   closeProject: () => void;
 
   select: (id: string | null) => void;
+  setPendingAsset: (assetId: string | null) => void;
+  /** Place la photo armée dans une cellule. Renvoie true si une photo a été posée. */
+  placePendingAsset: (cellId: string) => boolean;
   /** Applique une modification de scène. history=false pour les gestes continus. */
   mutate: (updater: (scene: Scene) => Scene, options?: { history?: boolean }) => void;
   commitHistory: () => void;
@@ -63,6 +68,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   assetUrls: {},
   images: new Map(),
   selectedId: null,
+  pendingAssetId: null,
   past: [],
   future: [],
   saveState: 'idle',
@@ -91,6 +97,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       past: [],
       future: [],
       selectedId: null,
+      pendingAssetId: null,
       saveState: 'idle',
       loading: false,
     });
@@ -111,6 +118,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
       assetUrls: {},
       images: new Map(),
       selectedId: null,
+      pendingAssetId: null,
       past: [],
       future: [],
       saveState: 'idle',
@@ -119,6 +127,21 @@ export const useEditorStore = create<EditorState>((set, get) => ({
 
   select(id) {
     set({ selectedId: id });
+  },
+
+  setPendingAsset(assetId) {
+    set({ pendingAssetId: assetId });
+  },
+
+  placePendingAsset(cellId) {
+    const { pendingAssetId } = get();
+    if (!pendingAssetId) return false;
+    get().updateElement(cellId, {
+      assetId: pendingAssetId,
+      crop: { offsetX: 0, offsetY: 0, scale: 1 },
+    } as Partial<SceneElement>);
+    set({ pendingAssetId: null });
+    return true;
   },
 
   mutate(updater, options) {

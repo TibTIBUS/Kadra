@@ -51,6 +51,8 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
   const select = useEditorStore((state) => state.select);
   const updateElement = useEditorStore((state) => state.updateElement);
   const commitHistory = useEditorStore((state) => state.commitHistory);
+  const pendingAssetId = useEditorStore((state) => state.pendingAssetId);
+  const placePendingAsset = useEditorStore((state) => state.placePendingAsset);
 
   const images = useImages(assetUrls);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -101,15 +103,15 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
     [scale],
   );
 
-  const handleWheel = useCallback(
-    (event: Konva.KonvaEventObject<WheelEvent>) => {
+  /** Zoom du recadrage de la cellule sélectionnée, partagé molette et pincement. */
+  const zoomSelectedCrop = useCallback(
+    (factor: number) => {
       if (!scene || !selectedId) return;
       const element = scene.elements.find((el) => el.id === selectedId);
       if (!element || element.type !== 'photoCell' || !element.assetId) return;
-      event.evt.preventDefault();
 
       const image = images.get(element.assetId);
-      const nextScale = clampZoom((element.crop.scale ?? 1) * (event.evt.deltaY > 0 ? 0.94 : 1.06));
+      const nextScale = clampZoom((element.crop.scale ?? 1) * factor);
       const candidate: PhotoCellElement = { ...element, crop: { ...element.crop, scale: nextScale } };
       const offsets = image
         ? clampOffsets(candidate, image.naturalWidth, image.naturalHeight, element.crop.offsetX, element.crop.offsetY)
@@ -121,6 +123,44 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
     },
     [scene, selectedId, images, updateElement],
   );
+
+  const handleWheel = useCallback(
+    (event: Konva.KonvaEventObject<WheelEvent>) => {
+      if (!scene || !selectedId) return;
+      const element = scene.elements.find((el) => el.id === selectedId);
+      if (!element || element.type !== 'photoCell' || !element.assetId) return;
+      event.evt.preventDefault();
+      zoomSelectedCrop(event.evt.deltaY > 0 ? 0.94 : 1.06);
+    },
+    [scene, selectedId, zoomSelectedCrop],
+  );
+
+  // Pincement à deux doigts : même effet que la molette, sur tablette et mobile.
+  const pinchDistance = useRef(0);
+
+  const handleTouchMove = useCallback(
+    (event: Konva.KonvaEventObject<TouchEvent>) => {
+      const touches = event.evt.touches;
+      if (touches.length !== 2) return;
+      const [first, second] = [touches[0], touches[1]];
+      if (!first || !second) return;
+      event.evt.preventDefault();
+
+      const distance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+      if (pinchDistance.current) {
+        zoomSelectedCrop(distance / pinchDistance.current);
+      }
+      pinchDistance.current = distance;
+    },
+    [zoomSelectedCrop],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (pinchDistance.current) {
+      pinchDistance.current = 0;
+      commitHistory();
+    }
+  }, [commitHistory]);
 
   if (!scene) return <div className="editor__stage" ref={containerRef} />;
 
@@ -144,6 +184,12 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
         if (cell) onDropAsset(assetId, cell.id);
       }}
     >
+      {pendingAssetId ? (
+        <div className="stage-hint" role="status">
+          Touchez une cellule pour y placer la photo
+        </div>
+      ) : null}
+
       <Stage
         ref={stageRef}
         width={scene.width * scale}
@@ -151,6 +197,8 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
         scaleX={scale}
         scaleY={scale}
         onWheel={handleWheel}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         onMouseDown={(event) => {
           if (event.target === event.target.getStage()) select(null);
         }}
@@ -175,8 +223,12 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   x={element.x}
                   y={element.y}
                   draggable={!isCropping}
-                  onClick={() => select(element.id)}
-                  onTap={() => select(element.id)}
+                  onClick={() => {
+                    if (!placePendingAsset(element.id)) select(element.id);
+                  }}
+                  onTap={() => {
+                    if (!placePendingAsset(element.id)) select(element.id);
+                  }}
                   onDragEnd={(event) =>
                     updateElement(element.id, { x: event.target.x(), y: event.target.y() })
                   }
@@ -270,8 +322,12 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   letterSpacing={element.letterSpacing ?? 0}
                   wrap="word"
                   draggable
-                  onClick={() => select(element.id)}
-                  onTap={() => select(element.id)}
+                  onClick={() => {
+                    if (!placePendingAsset(element.id)) select(element.id);
+                  }}
+                  onTap={() => {
+                    if (!placePendingAsset(element.id)) select(element.id);
+                  }}
                   onDragEnd={(event) =>
                     updateElement(element.id, { x: event.target.x(), y: event.target.y() })
                   }
