@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useEditorStore } from '../../store/editorStore';
 import { assetRepository } from '../../data/assetRepository';
-import { ACCEPT_ATTRIBUTE, isAcceptedImage, processImageFile } from '../../lib/image';
+import { ACCEPT_ATTRIBUTE, ImageImportError, isAcceptedImage, processImageFile } from '../../lib/image';
 import { useToast } from '../ui/Toast';
 import { ASSET_DRAG_TYPE } from './EditorCanvas';
 import { DEFAULT_CROP } from '../../lib/scene';
@@ -20,6 +20,7 @@ export default function PhotoPanel() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [importing, setImporting] = useState(0);
+  const [failures, setFailures] = useState<{ name: string; reason: string }[]>([]);
 
   const selectedCell =
     scene?.elements.find((element) => element.id === selectedId && element.type === 'photoCell') ?? null;
@@ -31,8 +32,10 @@ export default function PhotoPanel() {
       toast('Formats acceptés : JPEG, PNG, WEBP, HEIC');
       return;
     }
+    setFailures([]);
     setImporting(list.length);
-    let failures = 0;
+    const rejected: { name: string; reason: string }[] = [];
+
     for (const file of list) {
       try {
         const processed = await processImageFile(file);
@@ -46,12 +49,22 @@ export default function PhotoPanel() {
         });
       } catch (error) {
         console.error('Import impossible :', file.name, error);
-        failures += 1;
+        rejected.push({
+          name: file.name,
+          reason:
+            error instanceof ImageImportError
+              ? error.message
+              : "Erreur inattendue pendant l'import.",
+        });
       }
       setImporting((count) => count - 1);
     }
+
     await refreshAssets();
-    if (failures) toast(`${failures} photo(s) n'ont pas pu être importées`);
+    setFailures(rejected);
+    if (rejected.length) {
+      toast(`${rejected.length} photo(s) non importée(s) — détail dans le panneau`);
+    }
   };
 
   const assignToSelection = (assetId: string) => {
@@ -109,6 +122,31 @@ export default function PhotoPanel() {
         <p className="hint" style={{ marginTop: 10 }}>
           Import en cours — {importing} photo(s) restante(s)…
         </p>
+      ) : null}
+
+      {failures.length ? (
+        <div className="warning-list">
+          <div className="row row--between" style={{ marginBottom: 6 }}>
+            <strong>Photos non importées</strong>
+            <button
+              type="button"
+              className="btn btn--sm btn--ghost"
+              onClick={() => setFailures([])}
+              aria-label="Masquer la liste"
+            >
+              ✕
+            </button>
+          </div>
+          <ul style={{ margin: 0, paddingLeft: 16 }}>
+            {failures.map((failure) => (
+              <li key={failure.name} style={{ marginBottom: 6 }}>
+                <strong>{failure.name}</strong>
+                <br />
+                {failure.reason}
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
 
       <div className="photo-list">
