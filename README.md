@@ -27,7 +27,11 @@ Le site est servi depuis un sous-chemin (`https://<compte>.github.io/Kadra/`) : 
 passe `BASE_PATH` à Vite, et l'application utilise un routeur à hash, donc aucune règle de
 réécriture n'est nécessaire.
 
-Prérequis côté dépôt, à faire une fois : **Settings → Pages → Source : GitHub Actions**.
+Prérequis côté dépôt, à faire une fois à la main : **Settings → Pages → Source : GitHub
+Actions**. Le workflow demande l'activation automatique (`enablement: true`), mais le
+`GITHUB_TOKEN` d'Actions n'a pas le droit de créer le site Pages d'un dépôt : GitHub répond
+« Resource not accessible by integration ». Une fois l'interrupteur activé, chaque push
+publie le site sur `https://tibtibus.github.io/Kadra/`.
 
 ## Déploiement Netlify
 
