@@ -178,9 +178,18 @@ L'éditeur suit la même logique : ajouter ou retirer une slide **étire ou rét
 éléments qui traversaient déjà toute la scène, au lieu d'empiler des cellules génériques à
 côté d'une photo panoramique restée courte.
 
+### Un motif par hauteur, pas un écrasement
+
+Chaque template est construit **pour chaque hauteur de sortie** (1350 en portrait, 1080 en
+carré) et stocké dans `variants`. Dessiner une seule fois en portrait puis écraser
+verticalement pour obtenir le carré transformait un médaillon rond en ovale, désalignait un
+cadre incliné et aplatissait une grille carrée. Les mises en page sont donc exprimées en
+proportions de la hauteur : ce qui doit rester carré le reste, ce qui doit tenir dans la page
+y tient.
+
 Déposer un fichier JSON dans `src/templates/` suffit à ajouter un template (repris par
-`import.meta.glob`). Les coordonnées sont définies en 1080 × 1350 par slide et mises à
-l'échelle pour les formats carrés. `scripts/generate-templates.mjs` régénère les 20 livrés.
+`import.meta.glob`). `scripts/generate-templates.mjs` régénère les 20 livrés, chacun pour les
+deux hauteurs.
 
 ## Hors périmètre V1
 

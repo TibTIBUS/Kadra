@@ -1,6 +1,6 @@
 import type { Background, ProjectFormat, Scene, SceneElement } from '../types/scene';
 import { getFormat } from '../lib/formats';
-import { cloneScene, createPhotoCell } from '../lib/scene';
+import { createPhotoCell } from '../lib/scene';
 import { newId } from '../data/projectRepository';
 import { SAFE_MARGIN } from '../theme';
 
@@ -38,10 +38,35 @@ export interface TemplateDefinition {
   photoSlots?: (slideCount: number) => number;
 }
 
+/** Motif d'un template pour une hauteur donnée. */
+interface TemplateVariant {
+  full?: SceneElement[];
+  lead?: SceneElement[];
+  body?: SceneElement[];
+  bodyAlt?: SceneElement[];
+  tail?: SceneElement[];
+}
+
 interface TemplateFile extends Omit<TemplateDefinition, 'photoSlots'> {
-  /** Hauteur de référence des coordonnées du fichier. */
-  refHeight: number;
   refSlideWidth: number;
+  /**
+   * Un motif par hauteur de sortie (1350 en portrait, 1080 en carré). Chaque
+   * variante est dessinée pour sa hauteur : écraser un motif portrait pour
+   * en faire un carré transforme un médaillon rond en ovale, désaligne un
+   * cadre incliné et aplatit une grille carrée.
+   */
+  variants: Record<string, TemplateVariant>;
+}
+
+/** Motif correspondant à la hauteur visée, avec repli sur le plus proche. */
+function variantFor(file: TemplateFile, height: number): TemplateVariant {
+  const exact = file.variants[String(height)];
+  if (exact) return exact;
+  const heights = Object.keys(file.variants).map(Number);
+  const nearest = heights.reduce((best, value) =>
+    Math.abs(value - height) < Math.abs(best - height) ? value : best,
+  heights[0] ?? height);
+  return file.variants[String(nearest)] ?? {};
 }
 
 const modules = import.meta.glob<{ default: TemplateFile }>('./*.json', { eager: true });
@@ -57,14 +82,16 @@ const countCells = (elements: SceneElement[] | undefined) =>
 
 /** Combien de photos ce template accepte-t-il pour N slides ? */
 export function photoSlotCount(template: TemplateFile, slideCount: number): number {
-  const layout = slotLayout(template, slideCount);
+  const variant = variantFor(template, 1350);
+  const layout = slotLayout(variant, slideCount);
+  const bodySlides = layout.filter((slot) => slot === 'body').length;
   return (
-    countCells(template.full) +
-    layout.filter((slot) => slot === 'lead').length * countCells(template.lead) +
-    Math.ceil(layout.filter((slot) => slot === 'body').length / 2) * countCells(template.body) +
-    Math.floor(layout.filter((slot) => slot === 'body').length / 2) *
-      countCells(template.bodyAlt?.length ? template.bodyAlt : template.body) +
-    layout.filter((slot) => slot === 'tail').length * countCells(template.tail)
+    countCells(variant.full) +
+    layout.filter((slot) => slot === 'lead').length * countCells(variant.lead) +
+    Math.ceil(bodySlides / 2) * countCells(variant.body) +
+    Math.floor(bodySlides / 2) *
+      countCells(variant.bodyAlt?.length ? variant.bodyAlt : variant.body) +
+    layout.filter((slot) => slot === 'tail').length * countCells(variant.tail)
   );
 }
 
@@ -82,7 +109,7 @@ export const templatesForFormat = (format: ProjectFormat): TemplateDefinition[] 
 type Slot = 'lead' | 'body' | 'tail' | 'empty';
 
 /** Répartit couverture, motif courant et slide finale sur N slides. */
-function slotLayout(template: Pick<TemplateFile, 'lead' | 'body' | 'tail'>, slideCount: number): Slot[] {
+function slotLayout(template: TemplateVariant, slideCount: number): Slot[] {
   const layout: Slot[] = Array.from({ length: slideCount }, () => 'empty');
   const hasLead = Boolean(template.lead?.length);
   const hasTail = Boolean(template.tail?.length);
@@ -137,31 +164,6 @@ const stretch = (element: SceneElement, sceneWidth: number): SceneElement => {
   return { ...element, id, x };
 };
 
-/** Met une scène à l'échelle verticale du format visé (1350 → 1080). */
-function scaleHeight(scene: Scene, targetHeight: number): Scene {
-  const factor = targetHeight / scene.height;
-  if (factor === 1) return scene;
-
-  const next = cloneScene(scene);
-  next.height = targetHeight;
-  next.elements = next.elements.map((element): SceneElement => {
-    if (element.type === 'photoCell') return { ...element, y: element.y * factor, h: element.h * factor };
-    if (element.type === 'text') {
-      return { ...element, y: element.y * factor, size: Math.round(element.size * factor) };
-    }
-    if (element.shape === 'circle') return { ...element, y: element.y * factor, r: (element.r ?? 0) * factor };
-    if (element.shape === 'line') {
-      return {
-        ...element,
-        y: element.y * factor,
-        points: (element.points ?? []).map((value, index) => (index % 2 === 1 ? value * factor : value)),
-      };
-    }
-    return { ...element, y: element.y * factor, h: (element.h ?? 0) * factor };
-  });
-  return next;
-}
-
 /** Assemble la scène d'un projet pour le nombre de slides demandé. */
 export function instantiateTemplate(
   template: TemplateDefinition,
@@ -169,22 +171,23 @@ export function instantiateTemplate(
   slideCount: number,
 ): Scene {
   const spec = getFormat(format);
-  const file = template as TemplateFile;
+  const file = template as unknown as TemplateFile;
+  const variant = variantFor(file, spec.slideHeight);
   const sceneWidth = spec.slideWidth * slideCount;
   const elements: SceneElement[] = [];
 
-  for (const element of file.full ?? []) {
+  for (const element of variant.full ?? []) {
     elements.push(stretch(element, sceneWidth));
   }
 
   let bodyRank = 0;
-  slotLayout(file, slideCount).forEach((slot, index) => {
+  slotLayout(variant, slideCount).forEach((slot, index) => {
     let source: SceneElement[] | undefined;
-    if (slot === 'lead') source = file.lead;
-    else if (slot === 'tail') source = file.tail;
+    if (slot === 'lead') source = variant.lead;
+    else if (slot === 'tail') source = variant.tail;
     else if (slot === 'body') {
       // Une slide sur deux prend la variante, quand le template en fournit une.
-      source = bodyRank % 2 === 1 && file.bodyAlt?.length ? file.bodyAlt : file.body;
+      source = bodyRank % 2 === 1 && variant.bodyAlt?.length ? variant.bodyAlt : variant.body;
       bodyRank += 1;
     }
     if (!source) return;
@@ -193,11 +196,11 @@ export function instantiateTemplate(
     }
   });
 
-  // Filet de sécurité : une slide sans aucun élément et sans photo pleine scène
-  // recevrait un vide. On y place une cellule plein cadre.
+  // Filet de sécurité : une slide qu'aucun élément ne couvre recevrait un vide.
   const covered = new Set<number>();
   for (const element of elements) {
-    const width = element.type === 'photoCell' ? element.w : element.type === 'text' ? element.w : (element.w ?? 0);
+    const width =
+      element.type === 'photoCell' ? element.w : element.type === 'text' ? element.w : (element.w ?? 0);
     const first = Math.floor(element.x / spec.slideWidth);
     const last = Math.floor((element.x + Math.max(width, 1) - 1) / spec.slideWidth);
     for (let slide = Math.max(0, first); slide <= Math.min(slideCount - 1, last); slide += 1) {
@@ -211,19 +214,17 @@ export function instantiateTemplate(
         x: index * spec.slideWidth + SAFE_MARGIN,
         y: SAFE_MARGIN,
         w: spec.slideWidth - SAFE_MARGIN * 2,
-        h: file.refHeight - SAFE_MARGIN * 2,
+        h: spec.slideHeight - SAFE_MARGIN * 2,
         radius: 6,
       }),
     );
   }
 
-  const scene: Scene = {
+  return {
     width: sceneWidth,
-    height: file.refHeight,
+    height: spec.slideHeight,
     slideWidth: spec.slideWidth,
     background: file.background,
     elements,
   };
-
-  return scaleHeight(scene, spec.slideHeight);
 }

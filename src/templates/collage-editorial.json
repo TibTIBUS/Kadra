@@ -8,74 +8,143 @@
     "collage_portrait",
     "collage_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#0f3d2e"
   },
-  "body": [
-    {
-      "id": "s1",
-      "type": "shape",
-      "shape": "rect",
-      "x": 0,
-      "y": 0,
-      "w": 1080,
-      "h": 620,
-      "fill": "#7ed6ad",
-      "radius": 0
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "s1",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 496.8,
+          "fill": "#7ed6ad",
+          "radius": 0
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 72,
+          "y": 94.39200000000001,
+          "w": 816,
+          "text": "NOS\nRÉALISATIONS",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 96,
+          "color": "#0f3d2e",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -3.3600000000000003
+        },
+        {
+          "id": "c3",
+          "type": "photoCell",
+          "x": 72,
+          "y": 378,
+          "w": 936,
+          "h": 572.4,
+          "radius": 8,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          },
+          "shadow": {
+            "color": "#000000",
+            "blur": 60,
+            "offsetX": 0,
+            "offsetY": 24,
+            "opacity": 0.45
+          }
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 996.2,
+          "w": 936,
+          "text": "localia.fr",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     },
-    {
-      "id": "t2",
-      "type": "text",
-      "x": 72,
-      "y": 120,
-      "w": 816,
-      "text": "NOS\nRÉALISATIONS",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 96,
-      "color": "#0f3d2e",
-      "align": "left",
-      "lineHeight": 1.02,
-      "letterSpacing": -3.3600000000000003
-    },
-    {
-      "id": "c3",
-      "type": "photoCell",
-      "x": 72,
-      "y": 470,
-      "w": 936,
-      "h": 700,
-      "radius": 8,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      },
-      "shadow": {
-        "color": "#000000",
-        "blur": 60,
-        "offsetX": 0,
-        "offsetY": 24,
-        "opacity": 0.45
-      }
-    },
-    {
-      "id": "t4",
-      "type": "text",
-      "x": 72,
-      "y": 1242,
-      "w": 936,
-      "text": "localia.fr",
-      "font": "Poppins",
-      "weight": 600,
-      "size": 38,
-      "color": "#7ed6ad",
-      "align": "left",
-      "lineHeight": 1.28,
-      "letterSpacing": 4.56
+    "1350": {
+      "body": [
+        {
+          "id": "s1",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 621,
+          "fill": "#7ed6ad",
+          "radius": 0
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 72,
+          "y": 117.99,
+          "w": 816,
+          "text": "NOS\nRÉALISATIONS",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 96,
+          "color": "#0f3d2e",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -3.3600000000000003
+        },
+        {
+          "id": "c3",
+          "type": "photoCell",
+          "x": 72,
+          "y": 472.49999999999994,
+          "w": 936,
+          "h": 715.5,
+          "radius": 8,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          },
+          "shadow": {
+            "color": "#000000",
+            "blur": 60,
+            "offsetX": 0,
+            "offsetY": 24,
+            "opacity": 0.45
+          }
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 1250,
+          "w": 936,
+          "text": "localia.fr",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     }
-  ]
+  }
 }

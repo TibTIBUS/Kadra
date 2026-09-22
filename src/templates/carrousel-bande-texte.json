@@ -8,7 +8,6 @@
     "carousel_portrait",
     "carousel_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "gradient",
@@ -16,50 +15,102 @@
     "to": "#08201a",
     "angle": 0
   },
-  "full": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 0,
-      "y": 72,
-      "w": 1,
-      "h": 640,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
+  "variants": {
+    "1080": {
+      "full": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 72,
+          "w": 1,
+          "h": 486.72,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 0,
+          "y": 618.12,
+          "w": 1,
+          "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 178,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 0.98,
+          "letterSpacing": -7.653999999999999
+        },
+        {
+          "id": "s3",
+          "type": "shape",
+          "shape": "line",
+          "x": 0,
+          "y": 968,
+          "points": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 6
+        }
+      ]
     },
-    {
-      "id": "t2",
-      "type": "text",
-      "x": 0,
-      "y": 798,
-      "w": 1,
-      "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 232,
-      "color": "#7ed6ad",
-      "align": "left",
-      "lineHeight": 0.98,
-      "letterSpacing": -10
-    },
-    {
-      "id": "s3",
-      "type": "shape",
-      "shape": "line",
-      "x": 0,
-      "y": 1238,
-      "points": [
-        0,
-        0,
-        1,
-        0
-      ],
-      "stroke": "#ef8a3f",
-      "strokeWidth": 6
+    "1350": {
+      "full": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 72,
+          "w": 1,
+          "h": 627.12,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 0,
+          "y": 773.37,
+          "w": 1,
+          "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 198,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 0.98,
+          "letterSpacing": -8.514
+        },
+        {
+          "id": "s3",
+          "type": "shape",
+          "shape": "line",
+          "x": 0,
+          "y": 1238,
+          "points": [
+            0,
+            0,
+            1,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 6
+        }
+      ]
     }
-  ]
+  }
 }

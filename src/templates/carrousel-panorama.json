@@ -8,73 +8,141 @@
     "carousel_portrait",
     "carousel_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#111111"
   },
-  "full": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 0,
-      "y": 0,
-      "w": 1,
-      "h": 1350,
-      "radius": 0,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
-    }
-  ],
-  "lead": [
-    {
-      "id": "s2",
-      "type": "shape",
-      "shape": "rect",
-      "x": 0,
-      "y": 675,
-      "w": 1080,
-      "h": 675,
-      "radius": 0,
-      "gradient": {
-        "from": "rgba(0,0,0,0)",
-        "to": "rgba(11,26,21,0.92)",
-        "angle": 90
-      }
-    },
-    {
-      "id": "t3",
-      "type": "text",
-      "x": 72,
-      "y": 1088,
-      "w": 936,
-      "text": "FAITES\nGLISSER",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 76,
-      "color": "#ffffff",
-      "align": "left",
-      "lineHeight": 1.02,
-      "letterSpacing": -1.672
-    },
-    {
-      "id": "s4",
-      "type": "shape",
-      "shape": "line",
-      "x": 72,
-      "y": 1218,
-      "points": [
-        0,
-        0,
-        90,
-        0
+  "variants": {
+    "1080": {
+      "full": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 0,
+          "w": 1,
+          "h": 1080,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        }
       ],
-      "stroke": "#ef8a3f",
-      "strokeWidth": 8
+      "lead": [
+        {
+          "id": "s2",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 540,
+          "w": 1080,
+          "h": 540,
+          "radius": 0,
+          "gradient": {
+            "from": "rgba(0,0,0,0)",
+            "to": "rgba(11,26,21,0.92)",
+            "angle": 90
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 818,
+          "w": 936,
+          "text": "FAITES\nGLISSER",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 76,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -1.672
+        },
+        {
+          "id": "s4",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 948,
+          "points": [
+            0,
+            0,
+            90,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        }
+      ]
+    },
+    "1350": {
+      "full": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 0,
+          "w": 1,
+          "h": 1350,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        }
+      ],
+      "lead": [
+        {
+          "id": "s2",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 675,
+          "w": 1080,
+          "h": 675,
+          "radius": 0,
+          "gradient": {
+            "from": "rgba(0,0,0,0)",
+            "to": "rgba(11,26,21,0.92)",
+            "angle": 90
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 1088,
+          "w": 936,
+          "text": "FAITES\nGLISSER",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 76,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -1.672
+        },
+        {
+          "id": "s4",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 1218,
+          "points": [
+            0,
+            0,
+            90,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        }
+      ]
     }
-  ]
+  }
 }

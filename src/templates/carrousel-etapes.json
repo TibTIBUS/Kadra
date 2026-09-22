@@ -8,71 +8,137 @@
     "carousel_portrait",
     "carousel_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#0f3d2e"
   },
-  "body": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 72,
-      "y": 72,
-      "w": 936,
-      "h": 700,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 617.4,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 72,
+          "y": 721.8,
+          "w": 936,
+          "text": "{nn}",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 76,
+          "color": "#ef8a3f",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -1.672
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 816.8,
+          "w": 936,
+          "text": "Étape {n}",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 60,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 897.8,
+          "w": 896,
+          "text": "Une phrase courte pour décrire cette étape.",
+          "font": "Poppins",
+          "weight": 400,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.45,
+          "letterSpacing": 0
+        }
+      ]
     },
-    {
-      "id": "t2",
-      "type": "text",
-      "x": 72,
-      "y": 820,
-      "w": 936,
-      "text": "{nn}",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 76,
-      "color": "#ef8a3f",
-      "align": "left",
-      "lineHeight": 1.02,
-      "letterSpacing": -1.672
-    },
-    {
-      "id": "t3",
-      "type": "text",
-      "x": 72,
-      "y": 944,
-      "w": 936,
-      "text": "Étape {n}",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 60,
-      "color": "#ffffff",
-      "align": "left",
-      "lineHeight": 1.28,
-      "letterSpacing": -1.3199999999999998
-    },
-    {
-      "id": "t4",
-      "type": "text",
-      "x": 72,
-      "y": 1040,
-      "w": 896,
-      "text": "Une phrase courte pour décrire cette étape.",
-      "font": "Poppins",
-      "weight": 400,
-      "size": 38,
-      "color": "#7ed6ad",
-      "align": "left",
-      "lineHeight": 1.45,
-      "letterSpacing": 0
+    "1350": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 879.3,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t2",
+          "type": "text",
+          "x": 72,
+          "y": 991.8,
+          "w": 936,
+          "text": "{nn}",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 76,
+          "color": "#ef8a3f",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -1.672
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 1086.8,
+          "w": 936,
+          "text": "Étape {n}",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 60,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 1167.8,
+          "w": 896,
+          "text": "Une phrase courte pour décrire cette étape.",
+          "font": "Poppins",
+          "weight": 400,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.45,
+          "letterSpacing": 0
+        }
+      ]
     }
-  ]
+  }
 }

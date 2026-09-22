@@ -8,55 +8,105 @@
     "collage_portrait",
     "collage_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#0f3d2e"
   },
-  "body": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 72,
-      "y": 72,
-      "w": 936,
-      "h": 560,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 402,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 72,
+          "y": 492,
+          "w": 936,
+          "h": 402,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 925.92,
+          "w": 936,
+          "text": "Deux moments, une histoire",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 60,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998
+        }
+      ]
     },
-    {
-      "id": "c2",
-      "type": "photoCell",
-      "x": 72,
-      "y": 650,
-      "w": 936,
-      "h": 560,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
-    },
-    {
-      "id": "t3",
-      "type": "text",
-      "x": 72,
-      "y": 1250,
-      "w": 936,
-      "text": "Deux moments, une histoire",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 60,
-      "color": "#7ed6ad",
-      "align": "left",
-      "lineHeight": 1.28,
-      "letterSpacing": -1.3199999999999998
+    "1350": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 537,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 72,
+          "y": 627,
+          "w": 936,
+          "h": 537,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 1195.92,
+          "w": 936,
+          "text": "Deux moments, une histoire",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 60,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998
+        }
+      ]
     }
-  ]
+  }
 }

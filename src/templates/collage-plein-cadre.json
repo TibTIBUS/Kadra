@@ -8,86 +8,167 @@
     "collage_portrait",
     "collage_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#111111"
   },
-  "body": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 0,
-      "y": 0,
-      "w": 1080,
-      "h": 1350,
-      "radius": 0,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "s2",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 453.59999999999997,
+          "w": 1080,
+          "h": 626.4,
+          "radius": 0,
+          "gradient": {
+            "from": "rgba(0,0,0,0)",
+            "to": "rgba(11,26,21,0.92)",
+            "angle": 90
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 662.16,
+          "w": 936,
+          "text": "UN TITRE\nQUI PORTE",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 96,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -3.3600000000000003
+        },
+        {
+          "id": "s4",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 916,
+          "points": [
+            0,
+            0,
+            120,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        },
+        {
+          "id": "t5",
+          "type": "text",
+          "x": 72,
+          "y": 950,
+          "w": 936,
+          "text": "Localia · Normandie",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     },
-    {
-      "id": "s2",
-      "type": "shape",
-      "shape": "rect",
-      "x": 0,
-      "y": 567,
-      "w": 1080,
-      "h": 783,
-      "radius": 0,
-      "gradient": {
-        "from": "rgba(0,0,0,0)",
-        "to": "rgba(11,26,21,0.92)",
-        "angle": 90
-      }
-    },
-    {
-      "id": "t3",
-      "type": "text",
-      "x": 72,
-      "y": 879.12,
-      "w": 936,
-      "text": "UN TITRE\nQUI PORTE",
-      "font": "Poppins",
-      "weight": 800,
-      "size": 122,
-      "color": "#ffffff",
-      "align": "left",
-      "lineHeight": 1.02,
-      "letterSpacing": -4.2700000000000005
-    },
-    {
-      "id": "s4",
-      "type": "shape",
-      "shape": "line",
-      "x": 72,
-      "y": 1186,
-      "points": [
-        0,
-        0,
-        120,
-        0
-      ],
-      "stroke": "#ef8a3f",
-      "strokeWidth": 8
-    },
-    {
-      "id": "t5",
-      "type": "text",
-      "x": 72,
-      "y": 1220,
-      "w": 936,
-      "text": "Localia · Normandie",
-      "font": "Poppins",
-      "weight": 600,
-      "size": 38,
-      "color": "#7ed6ad",
-      "align": "left",
-      "lineHeight": 1.28,
-      "letterSpacing": 4.56
+    "1350": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1350,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "s2",
+          "type": "shape",
+          "shape": "rect",
+          "x": 0,
+          "y": 567,
+          "w": 1080,
+          "h": 783,
+          "radius": 0,
+          "gradient": {
+            "from": "rgba(0,0,0,0)",
+            "to": "rgba(11,26,21,0.92)",
+            "angle": 90
+          }
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 72,
+          "y": 879.12,
+          "w": 936,
+          "text": "UN TITRE\nQUI PORTE",
+          "font": "Poppins",
+          "weight": 800,
+          "size": 122,
+          "color": "#ffffff",
+          "align": "left",
+          "lineHeight": 1.02,
+          "letterSpacing": -4.2700000000000005
+        },
+        {
+          "id": "s4",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 1186,
+          "points": [
+            0,
+            0,
+            120,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        },
+        {
+          "id": "t5",
+          "type": "text",
+          "x": 72,
+          "y": 1220,
+          "w": 936,
+          "text": "Localia · Normandie",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#7ed6ad",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     }
-  ]
+  }
 }

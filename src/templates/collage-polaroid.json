@@ -8,7 +8,6 @@
     "collage_portrait",
     "collage_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "gradient",
@@ -16,56 +15,114 @@
     "to": "#08201a",
     "angle": 90
   },
-  "body": [
-    {
-      "id": "s1",
-      "type": "shape",
-      "shape": "rect",
-      "x": 142.13669888372,
-      "y": 229.93471794476534,
-      "w": 800,
-      "h": 960,
-      "fill": "#ffffff",
-      "radius": 0,
-      "shadow": {
-        "color": "#000000",
-        "blur": 70,
-        "offsetX": 0,
-        "offsetY": 30,
-        "opacity": 0.5
-      },
-      "rotation": -3.5
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "s1",
+          "type": "shape",
+          "shape": "rect",
+          "x": 225,
+          "y": 162,
+          "w": 630,
+          "h": 756,
+          "fill": "#ffffff",
+          "radius": 0,
+          "shadow": {
+            "color": "#000000",
+            "blur": 70,
+            "offsetX": 0,
+            "offsetY": 30,
+            "opacity": 0.5
+          },
+          "rotation": -3.5
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 260.1462199864198,
+          "y": 199.88108031260145,
+          "w": 554.4,
+          "h": 593.46,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          },
+          "rotation": -3.5
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 279.7935463096001,
+          "y": 826.3112521747368,
+          "w": 554.4,
+          "text": "Été 2026",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 60,
+          "color": "#111111",
+          "align": "center",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998,
+          "rotation": -3.5
+        }
+      ]
     },
-    {
-      "id": "c2",
-      "type": "photoCell",
-      "x": 186.96217482790746,
-      "y": 278.03170842682823,
-      "w": 704,
-      "h": 760,
-      "radius": 0,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      },
-      "rotation": -3.5
-    },
-    {
-      "id": "t3",
-      "type": "text",
-      "x": 212.7707240717713,
-      "y": 1090.752331292907,
-      "w": 704,
-      "text": "Été 2026",
-      "font": "Poppins",
-      "weight": 600,
-      "size": 60,
-      "color": "#111111",
-      "align": "center",
-      "lineHeight": 1.28,
-      "letterSpacing": -1.3199999999999998,
-      "rotation": -3.5
+    "1350": {
+      "body": [
+        {
+          "id": "s1",
+          "type": "shape",
+          "shape": "rect",
+          "x": 146.25000000000006,
+          "y": 202.50000000000006,
+          "w": 787.4999999999999,
+          "h": 944.9999999999999,
+          "fill": "#ffffff",
+          "radius": 0,
+          "shadow": {
+            "color": "#000000",
+            "blur": 70,
+            "offsetX": 0,
+            "offsetY": 30,
+            "opacity": 0.5
+          },
+          "rotation": -3.5
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 190.18277498302479,
+          "y": 249.85135039075186,
+          "w": 692.9999999999999,
+          "h": 741.8249999999999,
+          "radius": 0,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          },
+          "rotation": -3.5
+        },
+        {
+          "id": "t3",
+          "type": "text",
+          "x": 214.74193288700013,
+          "y": 1032.889065218421,
+          "w": 692.9999999999999,
+          "text": "Été 2026",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 60,
+          "color": "#111111",
+          "align": "center",
+          "lineHeight": 1.28,
+          "letterSpacing": -1.3199999999999998,
+          "rotation": -3.5
+        }
+      ]
     }
-  ]
+  }
 }

@@ -8,69 +8,133 @@
     "collage_portrait",
     "collage_square"
   ],
-  "refHeight": 1350,
   "refSlideWidth": 1080,
   "background": {
     "type": "solid",
     "color": "#111111"
   },
-  "body": [
-    {
-      "id": "c1",
-      "type": "photoCell",
-      "x": 72,
-      "y": 72,
-      "w": 936,
-      "h": 780,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
+  "variants": {
+    "1080": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 579.9079999999999,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 72,
+          "y": 669.9079999999999,
+          "w": 459,
+          "h": 254.49200000000008,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c3",
+          "type": "photoCell",
+          "x": 549,
+          "y": 669.9079999999999,
+          "w": 459,
+          "h": 254.49200000000008,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 952.824,
+          "w": 936,
+          "text": "Reportage",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#ef8a3f",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     },
-    {
-      "id": "c2",
-      "type": "photoCell",
-      "x": 72,
-      "y": 870,
-      "w": 459,
-      "h": 340,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
-    },
-    {
-      "id": "c3",
-      "type": "photoCell",
-      "x": 549,
-      "y": 870,
-      "w": 459,
-      "h": 340,
-      "radius": 6,
-      "crop": {
-        "offsetX": 0,
-        "offsetY": 0,
-        "scale": 1
-      }
-    },
-    {
-      "id": "t4",
-      "type": "text",
-      "x": 72,
-      "y": 1244,
-      "w": 936,
-      "text": "Reportage",
-      "font": "Poppins",
-      "weight": 600,
-      "size": 38,
-      "color": "#ef8a3f",
-      "align": "left",
-      "lineHeight": 1.28,
-      "letterSpacing": 4.56
+    "1350": {
+      "body": [
+        {
+          "id": "c1",
+          "type": "photoCell",
+          "x": 72,
+          "y": 72,
+          "w": 936,
+          "h": 767.558,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c2",
+          "type": "photoCell",
+          "x": 72,
+          "y": 857.558,
+          "w": 459,
+          "h": 336.8420000000001,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "c3",
+          "type": "photoCell",
+          "x": 549,
+          "y": 857.558,
+          "w": 459,
+          "h": 336.8420000000001,
+          "radius": 6,
+          "crop": {
+            "offsetX": 0,
+            "offsetY": 0,
+            "scale": 1
+          }
+        },
+        {
+          "id": "t4",
+          "type": "text",
+          "x": 72,
+          "y": 1222.824,
+          "w": 936,
+          "text": "Reportage",
+          "font": "Poppins",
+          "weight": 600,
+          "size": 38,
+          "color": "#ef8a3f",
+          "align": "left",
+          "lineHeight": 1.28,
+          "letterSpacing": 4.56
+        }
+      ]
     }
-  ]
+  }
 }
