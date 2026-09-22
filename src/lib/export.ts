@@ -161,8 +161,58 @@ export interface ExportResult {
   slideCount: number;
 }
 
+export interface ExportedImages {
+  /** Slides Instagram dans l'ordre de publication. */
+  slides: Blob[];
+  facebook: Blob;
+}
+
 export interface ExportProgress {
   (step: string, ratio: number): void;
+}
+
+/**
+ * Produit les images finales, en pleine résolution. Séparé de la mise en ZIP :
+ * sur iPhone on partage les JPEG un par un vers la pellicule, un ZIP n'y entre pas.
+ */
+export async function renderExportImages(
+  project: Project,
+  assets: Asset[],
+  onProgress?: ExportProgress,
+): Promise<ExportedImages> {
+  onProgress?.('Chargement des photos haute résolution', 0.05);
+  const { images, release } = await loadImageMap(assets, 'original');
+
+  try {
+    onProgress?.('Rendu de la composition', 0.35);
+    const source = await renderSceneCanvas(project.scene, images);
+
+    onProgress?.('Découpe des slides', 0.65);
+    const slides = await Promise.all(
+      sliceSlideCanvases(source, project.scene).map((canvas) => canvasToBlob(canvas)),
+    );
+
+    onProgress?.('Variante Facebook', 0.85);
+    const facebook = await canvasToBlob(
+      buildFacebookCanvas(source, project.scene, project.fbVariant),
+    );
+
+    onProgress?.('Images prêtes', 0.95);
+    return { slides, facebook };
+  } finally {
+    release();
+  }
+}
+
+/** Assemble les images rendues en un ZIP prêt à télécharger. */
+export async function zipExportedImages(images: ExportedImages): Promise<Blob> {
+  const zip = new JSZip();
+  const instagram = zip.folder('instagram');
+  images.slides.forEach((blob, index) => {
+    instagram?.file(`${String(index + 1).padStart(2, '0')}.jpg`, blob);
+  });
+  zip.folder('facebook')?.file('facebook.jpg', images.facebook);
+  return zip.generateAsync({ type: 'blob' });
 }
 
 /** Export ZIP complet : slides Instagram numérotées + variante Facebook. */
@@ -171,36 +221,11 @@ export async function exportProjectZip(
   assets: Asset[],
   onProgress?: ExportProgress,
 ): Promise<ExportResult> {
-  onProgress?.('Chargement des photos haute résolution', 0.05);
-  const { images, release } = await loadImageMap(assets, 'original');
-
-  try {
-    onProgress?.('Rendu de la composition', 0.3);
-    const source = await renderSceneCanvas(project.scene, images);
-
-    onProgress?.('Découpe des slides', 0.6);
-    const slides = sliceSlideCanvases(source, project.scene);
-    const slideBlobs = await Promise.all(slides.map((canvas) => canvasToBlob(canvas)));
-
-    onProgress?.('Variante Facebook', 0.8);
-    const facebook = await canvasToBlob(
-      buildFacebookCanvas(source, project.scene, project.fbVariant),
-    );
-
-    onProgress?.('Création du ZIP', 0.9);
-    const zip = new JSZip();
-    const instagram = zip.folder('instagram');
-    slideBlobs.forEach((blob, index) => {
-      instagram?.file(`${String(index + 1).padStart(2, '0')}.jpg`, blob);
-    });
-    zip.folder('facebook')?.file('facebook.jpg', facebook);
-
-    const blob = await zip.generateAsync({ type: 'blob' });
-    onProgress?.('Terminé', 1);
-    return { zip: blob, slideCount: slideBlobs.length };
-  } finally {
-    release();
-  }
+  const images = await renderExportImages(project, assets, onProgress);
+  onProgress?.('Création du ZIP', 0.92);
+  const zip = await zipExportedImages(images);
+  onProgress?.('Terminé', 1);
+  return { zip, slideCount: images.slides.length };
 }
 
 /** Export d'une seule slide en pleine résolution. */

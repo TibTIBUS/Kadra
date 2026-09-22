@@ -69,9 +69,12 @@ La protection de l'URL se fait via le mot de passe de site Netlify (selon le pla
 - **Aperçus** : maquette Instagram avec swipe réel et pagination, grille du profil, Facebook.
 - **Variante Facebook** : une Page affiche un post multi-photos en mosaïque, l'effet seamless
   est perdu — l'app produit donc un visuel unique, au choix *panorama* ou *collage résumé*.
-- **Export** : ZIP contenant `instagram/01.jpg…` dans l'ordre de publication et
-  `facebook/facebook.jpg`, en JPEG qualité 0,92 aux dimensions exactes. Export d'une slide
-  seule également possible. L'export recharge les photos en pleine résolution.
+- **Export** : les images sont rendues en pleine résolution, puis proposées selon l'appareil.
+  Sur ordinateur, un ZIP contenant `instagram/01.jpg…` dans l'ordre de publication et
+  `facebook/facebook.jpg`. Sur iPhone et iPad, la feuille de partage du système, dont
+  « Enregistrer les images » dépose les JPEG **dans la pellicule** plutôt que dans Fichiers —
+  le ZIP reste proposé en repli. Export d'une slide seule dans les deux cas. JPEG qualité 0,92
+  aux dimensions exactes.
 - **Sauvegardes** : export/import d'un projet en `.kadra` (ZIP : `scene.json` + photos),
   sauvegarde complète de tous les projets, rappel si aucune sauvegarde depuis 7 jours.
 - **Stockage** : `navigator.storage.persist()` demandé au premier lancement, état et espace
@@ -114,6 +117,18 @@ pivot commun.
 Les textes posés sur une photo reçoivent un **voile dégradé** : c'est ce qui sépare un visuel
 lisible d'un titre noyé dans l'image. Les grands titres portent un interlettrage négatif, les
 petites capitales un interlettrage ouvert.
+
+### Enregistrer dans la pellicule
+
+Aucune API web ne permet d'écrire directement dans la photothèque d'un iPhone. Le seul chemin
+est `navigator.share()` avec des fichiers : la feuille de partage du système s'ouvre et son
+entrée « Enregistrer les images » les dépose dans Photos. Un ZIP ne peut pas y entrer, d'où la
+séparation entre `renderExportImages` (les JPEG) et `zipExportedImages` (la mise en archive).
+
+Contrainte à respecter : iOS refuse un partage qui ne part pas directement d'un geste de
+l'utilisateur. Les images sont donc rendues **à l'ouverture** de la fenêtre d'export, et le
+bouton appelle `navigator.share()` sans aucune attente intermédiaire. Le repli est automatique :
+`canShareFiles` est faux sur tous les navigateurs de bureau, qui reçoivent alors le ZIP.
 
 ### Typographie
 
