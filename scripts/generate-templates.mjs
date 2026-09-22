@@ -388,8 +388,10 @@ add('carrousel-panorama', 'Panorama plein cadre', 'carousel',
     full: [cell(0, 0, 1, H)],
     lead: [
       scrim(0, H * 0.5, W, H * 0.5),
-      text(M, H - M - 190, CW, 'FAITES\nGLISSER', { size: T.xl, color: P.blanc }),
-      line(M, H - M - 60, [0, 0, 90, 0], P.orange, 8),
+      // Le trait d'accent se place au-dessus du titre : posé en dessous, il
+      // tombait dans la seconde ligne.
+      line(M, H - M - T.xl * 1.02 * 2 - 44, [0, 0, 90, 0], P.orange, 8),
+      text(M, H - M - T.xl * 1.02 * 2, CW, 'FAITES\nGLISSER', { size: T.xl, color: P.blanc }),
     ],
   }));
 

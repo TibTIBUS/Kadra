@@ -32,24 +32,62 @@ export async function loadImageMap(
   return { images, release: () => urls.forEach((url) => URL.revokeObjectURL(url)) };
 }
 
-/** Rend la scène complète, sans aucun repère d'édition, à sa résolution exacte. */
-export async function renderSceneCanvas(
+export interface Region {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Rend une portion de la scène, à l'échelle demandée, sans aucun repère
+ * d'édition. Rendre par région évite d'allouer un canvas à la largeur de tout
+ * le carrousel : une slide fait toujours 1080 px de large, quel que soit le
+ * nombre de slides, ce qui tient dans les limites mémoire d'un iPhone.
+ */
+export async function renderRegion(
   scene: Scene,
   images: ImageMap,
-  pixelRatio = 1,
+  region: Region,
+  scale = 1,
 ): Promise<HTMLCanvasElement> {
   await ensureFontsReady();
-  const { stage, dispose } = createOffscreenStage(scene);
+  const { stage, dispose } = createOffscreenStage(region.width * scale, region.height * scale);
   try {
     const Konva = (await import('konva')).default;
-    const layer = new Konva.Layer({ listening: false });
+    const layer = new Konva.Layer({
+      listening: false,
+      scaleX: scale,
+      scaleY: scale,
+      x: -region.x * scale,
+      y: -region.y * scale,
+    });
+    // Konva applique par défaut le ratio de pixels de l'écran, soit 3 sur un
+    // iPhone : un rendu de 1080 × 1350 allouerait 3240 × 4050 px pour rien,
+    // puisque la composition est déjà à sa résolution finale. Le ratio doit
+    // être fixé **avant** l'ajout à la scène, qui dimensionne le canvas.
+    layer.getCanvas().setPixelRatio(1);
     stage.add(layer);
     drawScene(layer, scene, images);
     layer.draw();
-    return stage.toCanvas({ pixelRatio });
+    return stage.toCanvas({ pixelRatio: 1 });
   } finally {
     dispose();
   }
+}
+
+/** Rend la scène entière. `scale` réduit la taille du canvas alloué. */
+export async function renderSceneCanvas(
+  scene: Scene,
+  images: ImageMap,
+  scale = 1,
+): Promise<HTMLCanvasElement> {
+  return renderRegion(
+    scene,
+    images,
+    { x: 0, y: 0, width: scene.width, height: scene.height },
+    scale,
+  );
 }
 
 function canvasToBlob(canvas: HTMLCanvasElement, quality = JPEG_QUALITY): Promise<Blob> {
@@ -95,24 +133,38 @@ function newCanvas(width: number, height: number) {
   return { canvas, ctx };
 }
 
-/** Découpe la scène en une image par slide, dans l'ordre de publication. */
-export function sliceSlideCanvases(source: HTMLCanvasElement, scene: Scene): HTMLCanvasElement[] {
+/** Libère immédiatement la mémoire d'un canvas devenu inutile. */
+export function releaseCanvas(canvas: HTMLCanvasElement): void {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+
+/** Réduit un canvas à une largeur donnée. */
+export function scaleCanvasTo(source: HTMLCanvasElement, width: number): HTMLCanvasElement {
+  const ratio = width / source.width;
+  const { canvas, ctx } = newCanvas(Math.round(width), Math.round(source.height * ratio));
+  ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
+  return canvas;
+}
+
+/** Une image par slide, rendue indépendamment : aucun canvas géant. */
+export async function renderSlideCanvases(
+  scene: Scene,
+  images: ImageMap,
+  onProgress?: (done: number, total: number) => void,
+): Promise<HTMLCanvasElement[]> {
   const count = slideCountOf(scene);
   const result: HTMLCanvasElement[] = [];
   for (let index = 0; index < count; index += 1) {
-    const { canvas, ctx } = newCanvas(scene.slideWidth, scene.height);
-    ctx.drawImage(
-      source,
-      index * scene.slideWidth,
-      0,
-      scene.slideWidth,
-      scene.height,
-      0,
-      0,
-      scene.slideWidth,
-      scene.height,
+    result.push(
+      await renderRegion(scene, images, {
+        x: index * scene.slideWidth,
+        y: 0,
+        width: scene.slideWidth,
+        height: scene.height,
+      }),
     );
-    result.push(canvas);
+    onProgress?.(index + 1, count);
   }
   return result;
 }
@@ -121,24 +173,31 @@ export function sliceSlideCanvases(source: HTMLCanvasElement, scene: Scene): HTM
  * Variante Facebook : une Page affiche un post multi-photos en mosaïque,
  * l'effet seamless est perdu. On produit donc un visuel unique.
  */
-export function buildFacebookCanvas(
-  source: HTMLCanvasElement,
+export async function buildFacebookCanvas(
   scene: Scene,
+  images: ImageMap,
   variant: FbVariant,
-): HTMLCanvasElement {
+  slides: HTMLCanvasElement[],
+): Promise<HTMLCanvasElement> {
   const width = 1080;
   const height = scene.height === 1080 ? 1080 : 1350;
   const { canvas, ctx } = newCanvas(width, height);
   fillBackground(ctx, width, height, scene.background);
 
   if (variant === 'panorama') {
+    // Rendu directement à la largeur voulue : le panorama d'un carrousel de dix
+    // slides n'alloue jamais plus de 1080 px de large.
     const scale = width / scene.width;
-    const drawHeight = scene.height * scale;
-    ctx.drawImage(source, 0, (height - drawHeight) / 2, width, drawHeight);
+    const panorama = await renderRegion(
+      scene,
+      images,
+      { x: 0, y: 0, width: scene.width, height: scene.height },
+      scale,
+    );
+    ctx.drawImage(panorama, 0, (height - panorama.height) / 2);
     return canvas;
   }
 
-  const slides = sliceSlideCanvases(source, scene);
   const gap = 24;
   const padding = 48;
   const columns = slides.length <= 1 ? 1 : slides.length <= 4 ? 2 : 3;
@@ -188,18 +247,33 @@ export async function renderExportImages(
   const { images, release } = await loadImageMap(assets, 'original');
 
   try {
-    onProgress?.('Rendu de la composition', 0.35);
-    const source = await renderSceneCanvas(project.scene, images);
+    const scene = project.scene;
+    const count = slideCountOf(scene);
+    const slides: Blob[] = [];
+    // La variante « collage » est la seule à réutiliser les slides, et elle les
+    // réduit : on n'en garde donc que des vignettes. Chaque canvas pleine
+    // résolution est libéré dès qu'il est encodé, sinon dix slides restent en
+    // mémoire pour rien.
+    const minis: HTMLCanvasElement[] = [];
 
-    onProgress?.('Découpe des slides', 0.65);
-    const slides = await Promise.all(
-      sliceSlideCanvases(source, project.scene).map((canvas) => canvasToBlob(canvas)),
-    );
+    for (let index = 0; index < count; index += 1) {
+      onProgress?.(`Rendu de la slide ${index + 1} sur ${count}`, 0.1 + (0.7 * index) / count);
+      const canvas = await renderRegion(scene, images, {
+        x: index * scene.slideWidth,
+        y: 0,
+        width: scene.slideWidth,
+        height: scene.height,
+      });
+      slides.push(await canvasToBlob(canvas));
+      if (project.fbVariant === 'collage') minis.push(scaleCanvasTo(canvas, 420));
+      releaseCanvas(canvas);
+    }
 
     onProgress?.('Variante Facebook', 0.85);
-    const facebook = await canvasToBlob(
-      buildFacebookCanvas(source, project.scene, project.fbVariant),
-    );
+    const facebookCanvas = await buildFacebookCanvas(scene, images, project.fbVariant, minis);
+    const facebook = await canvasToBlob(facebookCanvas);
+    releaseCanvas(facebookCanvas);
+    minis.forEach(releaseCanvas);
 
     onProgress?.('Images prêtes', 0.95);
     return { slides, facebook };
@@ -240,10 +314,12 @@ export async function exportSingleSlide(
 ): Promise<Blob> {
   const { images, release } = await loadImageMap(assets, 'original');
   try {
-    const source = await renderSceneCanvas(project.scene, images);
-    const slides = sliceSlideCanvases(source, project.scene);
-    const canvas = slides[slideIndex];
-    if (!canvas) throw new Error('Slide introuvable');
+    const canvas = await renderRegion(project.scene, images, {
+      x: slideIndex * project.scene.slideWidth,
+      y: 0,
+      width: project.scene.slideWidth,
+      height: project.scene.height,
+    });
     return canvasToBlob(canvas);
   } finally {
     release();

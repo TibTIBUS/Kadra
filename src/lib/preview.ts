@@ -1,21 +1,14 @@
 import type { Asset, Project } from '../data/db';
 import type { Scene } from '../types/scene';
-import { loadImageMap, renderSceneCanvas, buildFacebookCanvas, sliceSlideCanvases } from './export';
+import {
+  buildFacebookCanvas,
+  loadImageMap,
+  releaseCanvas,
+  renderRegion,
+  scaleCanvasTo,
+} from './export';
 import { slideCountOf } from './scene';
 import { PROFILE_GRID_RATIO } from '../theme';
-
-const scaleCanvas = (source: HTMLCanvasElement, width: number): HTMLCanvasElement => {
-  const canvas = document.createElement('canvas');
-  const ratio = width / source.width;
-  canvas.width = Math.round(width);
-  canvas.height = Math.round(source.height * ratio);
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
-  }
-  return canvas;
-};
 
 export interface PreviewBundle {
   slides: string[];
@@ -34,30 +27,41 @@ export async function renderPreviewBundle(
 ): Promise<PreviewBundle> {
   const { images, release } = await loadImageMap(assets, 'preview');
   try {
-    const source = await renderSceneCanvas(project.scene, images);
-    const slides = sliceSlideCanvases(source, project.scene).map((canvas) =>
-      scaleCanvas(canvas, slideDisplayWidth).toDataURL('image/jpeg', 0.85),
-    );
-    const facebook = scaleCanvas(
-      buildFacebookCanvas(source, project.scene, project.fbVariant),
-      slideDisplayWidth,
+    // Les aperçus sont rendus à leur taille d'affichage : inutile d'allouer la
+    // pleine résolution, et c'est ce qui tient dans la mémoire d'un iPhone.
+    const scale = slideDisplayWidth / project.scene.slideWidth;
+    const count = slideCountOf(project.scene);
+    const slides: string[] = [];
+    const minis: HTMLCanvasElement[] = [];
+
+    for (let index = 0; index < count; index += 1) {
+      const canvas = await renderRegion(
+        project.scene,
+        images,
+        { x: index * project.scene.slideWidth, y: 0, width: project.scene.slideWidth, height: project.scene.height },
+        scale,
+      );
+      slides.push(canvas.toDataURL('image/jpeg', 0.85));
+      // La mosaïque Facebook réutilise ces mêmes vignettes : inutile de rendre
+      // une seconde fois les slides en pleine résolution.
+      if (project.fbVariant === 'collage') minis.push(canvas);
+      else releaseCanvas(canvas);
+    }
+
+    const facebookCanvas = await buildFacebookCanvas(project.scene, images, project.fbVariant, minis);
+    const facebook = scaleCanvasTo(facebookCanvas, slideDisplayWidth).toDataURL('image/jpeg', 0.85);
+    releaseCanvas(facebookCanvas);
+    minis.forEach(releaseCanvas);
+
+    const crop = profileGridCrop(project.scene);
+    const profileGrid = (
+      await renderRegion(project.scene, images, crop, 360 / crop.width)
     ).toDataURL('image/jpeg', 0.85);
-    const profileGrid = cropProfileGrid(source, project.scene).toDataURL('image/jpeg', 0.85);
+
     return { slides, facebook, profileGrid };
   } finally {
     release();
   }
-}
-
-/** Première slide recadrée au format 3:4 de la grille du profil Instagram. */
-export function cropProfileGrid(source: HTMLCanvasElement, scene: Scene): HTMLCanvasElement {
-  const crop = profileGridCrop(scene);
-  const canvas = document.createElement('canvas');
-  canvas.width = 360;
-  canvas.height = Math.round((360 * crop.height) / crop.width);
-  const ctx = canvas.getContext('2d');
-  ctx?.drawImage(source, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
-  return canvas;
 }
 
 /**
@@ -86,10 +90,12 @@ export async function renderProjectThumbnail(
 ): Promise<Blob | undefined> {
   const { images, release } = await loadImageMap(assets, 'preview');
   try {
-    const source = await renderSceneCanvas(project.scene, images);
-    const first = sliceSlideCanvases(source, project.scene)[0];
-    if (!first) return undefined;
-    const thumb = scaleCanvas(first, 360);
+    const thumb = await renderRegion(
+      project.scene,
+      images,
+      { x: 0, y: 0, width: project.scene.slideWidth, height: project.scene.height },
+      360 / project.scene.slideWidth,
+    );
     return await new Promise<Blob | undefined>((resolve) =>
       thumb.toBlob((blob) => resolve(blob ?? undefined), 'image/jpeg', 0.8),
     );

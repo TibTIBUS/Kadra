@@ -48,10 +48,25 @@
           }
         },
         {
-          "id": "t3",
+          "id": "s3",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 808.96,
+          "points": [
+            0,
+            0,
+            90,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        },
+        {
+          "id": "t4",
           "type": "text",
           "x": 72,
-          "y": 818,
+          "y": 852.96,
           "w": 936,
           "text": "FAITES\nGLISSER",
           "font": "Poppins",
@@ -61,21 +76,6 @@
           "align": "left",
           "lineHeight": 1.02,
           "letterSpacing": -1.672
-        },
-        {
-          "id": "s4",
-          "type": "shape",
-          "shape": "line",
-          "x": 72,
-          "y": 948,
-          "points": [
-            0,
-            0,
-            90,
-            0
-          ],
-          "stroke": "#ef8a3f",
-          "strokeWidth": 8
         }
       ]
     },
@@ -113,10 +113,25 @@
           }
         },
         {
-          "id": "t3",
+          "id": "s3",
+          "type": "shape",
+          "shape": "line",
+          "x": 72,
+          "y": 1078.96,
+          "points": [
+            0,
+            0,
+            90,
+            0
+          ],
+          "stroke": "#ef8a3f",
+          "strokeWidth": 8
+        },
+        {
+          "id": "t4",
           "type": "text",
           "x": 72,
-          "y": 1088,
+          "y": 1122.96,
           "w": 936,
           "text": "FAITES\nGLISSER",
           "font": "Poppins",
@@ -126,21 +141,6 @@
           "align": "left",
           "lineHeight": 1.02,
           "letterSpacing": -1.672
-        },
-        {
-          "id": "s4",
-          "type": "shape",
-          "shape": "line",
-          "x": 72,
-          "y": 1218,
-          "points": [
-            0,
-            0,
-            90,
-            0
-          ],
-          "stroke": "#ef8a3f",
-          "strokeWidth": 8
         }
       ]
     }

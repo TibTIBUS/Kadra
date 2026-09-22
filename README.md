@@ -98,8 +98,26 @@ Tout accès aux données passe par `src/data/` : brancher un backend en V2 (Netl
 Netlify DB) se fait sans toucher à l'interface.
 
 Le rendu d'export est **indépendant de l'éditeur** : `lib/render.ts` construit une scène Konva
-hors écran à la résolution exacte, `lib/export.ts` la découpe par slide. Les repères d'édition
-ne peuvent donc jamais se retrouver dans une image exportée.
+hors écran, `lib/export.ts` la rend slide par slide. Les repères d'édition ne peuvent donc
+jamais se retrouver dans une image exportée.
+
+### Mémoire : rendre par région, à la taille de sortie
+
+Un canvas coûte quatre octets par pixel, et Safari sur iPhone tue un onglet qui dépasse
+quelques centaines de mégaoctets. Trois règles en découlent :
+
+1. **On alloue à la taille de sortie, pas à celle de la composition.** `renderRegion` crée une
+   scène Konva aux dimensions demandées et met la couche à l'échelle, au lieu de rendre en
+   pleine taille puis de réduire.
+2. **On rend une slide à la fois.** Un carrousel de dix slides ne demande jamais un canvas de
+   10 800 px de large, qui dépasse d'ailleurs la limite de certains navigateurs mobiles.
+3. **On force le ratio de pixels à 1 hors écran.** Konva applique sinon celui de l'écran —
+   3 sur un iPhone — y compris aux tampons alloués dans le constructeur de `Stage` : une slide
+   de 1080 × 1350 allouait 3240 × 4050 px pour rien, la composition étant déjà à sa résolution
+   finale.
+
+Les canvas sont libérés dès leur encodage, et les miniatures de templates sont rendues **une à
+la fois** : dix rendus simultanés suffisaient à faire tuer l'onglet.
 
 ### Composition : masques, pivots, voiles
 
