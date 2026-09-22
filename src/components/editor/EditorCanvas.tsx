@@ -14,7 +14,7 @@ import {
 } from 'react-konva';
 import { useEditorStore } from '../../store/editorStore';
 import { useImages } from './useImages';
-import { computePlacement, clampOffsets, clampZoom } from '../../lib/photo';
+import { computePlacement, clampOffsets, toCellLocal, zoomCropAround } from '../../lib/photo';
 import { slideCountOf } from '../../lib/scene';
 import { profileGridCrop } from '../../lib/preview';
 import { shadowProps, traceCellPath, type PathSink } from '../../lib/mask';
@@ -24,14 +24,17 @@ import type { PhotoCellElement, Scene, SceneElement } from '../../types/scene';
 export const ASSET_DRAG_TYPE = 'application/x-kadra-asset';
 
 interface Props {
-  cropMode: boolean;
   zoom: number;
   onDropAsset: (assetId: string, cellId: string) => void;
 }
 
+/** Cellule sous un point de la scène, rotation et ordre d'empilement compris. */
 const hitTestCell = (scene: Scene, x: number, y: number): PhotoCellElement | undefined => {
   const cells = scene.elements.filter((el): el is PhotoCellElement => el.type === 'photoCell');
-  return [...cells].reverse().find((cell) => x >= cell.x && x <= cell.x + cell.w && y >= cell.y && y <= cell.y + cell.h);
+  return [...cells].reverse().find((cell) => {
+    const local = toCellLocal(cell, { x, y });
+    return local.x >= 0 && local.x <= cell.w && local.y >= 0 && local.y <= cell.h;
+  });
 };
 
 function BackgroundRect({ scene }: { scene: Scene }) {
@@ -56,7 +59,7 @@ function BackgroundRect({ scene }: { scene: Scene }) {
   );
 }
 
-export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
+export default function EditorCanvas({ zoom, onDropAsset }: Props) {
   const scene = useEditorStore((state) => state.scene);
   const assetUrls = useEditorStore((state) => state.assetUrls);
   const selectedId = useEditorStore((state) => state.selectedId);
@@ -90,15 +93,17 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
     return Math.max(0.02, fit * zoom);
   }, [scene, viewport, zoom]);
 
-  // Le Transformer suit la sélection, sauf en mode recadrage où la cellule ne bouge pas.
+  // Le cadre d'une cellule photo est verrouillé : pas de poignées, donc pas de
+  // déplacement ni de redimensionnement accidentel. Textes et formes gardent
+  // les leurs.
   useEffect(() => {
     const transformer = transformerRef.current;
     if (!transformer) return;
-    const node = selectedId ? nodesRef.current.get(selectedId) : undefined;
-    const isCropping = cropMode && scene?.elements.find((el) => el.id === selectedId)?.type === 'photoCell';
-    transformer.nodes(node && !isCropping ? [node] : []);
+    const selected = scene?.elements.find((el) => el.id === selectedId);
+    const node = selectedId && selected?.type !== 'photoCell' ? nodesRef.current.get(selectedId) : undefined;
+    transformer.nodes(node ? [node] : []);
     transformer.getLayer()?.batchDraw();
-  }, [selectedId, cropMode, scene]);
+  }, [selectedId, scene]);
 
   const registerNode = useCallback((id: string, node: Konva.Node | null) => {
     if (node) nodesRef.current.set(id, node);
@@ -115,64 +120,128 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
     [scale],
   );
 
-  /** Zoom du recadrage de la cellule sélectionnée, partagé molette et pincement. */
-  const zoomSelectedCrop = useCallback(
-    (factor: number) => {
-      if (!scene || !selectedId) return;
-      const element = scene.elements.find((el) => el.id === selectedId);
-      if (!element || element.type !== 'photoCell' || !element.assetId) return;
+  /**
+   * Zoome la photo d'une cellule autour d'un point de la scène. Le cadre n'est
+   * jamais touché : seul le recadrage change.
+   */
+  const zoomCellAt = useCallback(
+    (cell: PhotoCellElement, factor: number, scenePoint: { x: number; y: number }) => {
+      if (!cell.assetId) return;
+      const image = images.get(cell.assetId);
+      if (!image) return;
 
-      const image = images.get(element.assetId);
-      const nextScale = clampZoom((element.crop.scale ?? 1) * factor);
-      const candidate: PhotoCellElement = { ...element, crop: { ...element.crop, scale: nextScale } };
-      const offsets = image
-        ? clampOffsets(candidate, image.naturalWidth, image.naturalHeight, element.crop.offsetX, element.crop.offsetY)
-        : { offsetX: element.crop.offsetX, offsetY: element.crop.offsetY };
-
-      updateElement(selectedId, { crop: { scale: nextScale, ...offsets } } as Partial<SceneElement>, {
-        history: false,
-      });
+      const anchor = toCellLocal(cell, scenePoint);
+      const crop = zoomCropAround(cell, image.naturalWidth, image.naturalHeight, factor, anchor);
+      updateElement(cell.id, { crop } as Partial<SceneElement>, { history: false });
     },
-    [scene, selectedId, images, updateElement],
+    [images, updateElement],
+  );
+
+  const cellAt = useCallback(
+    (clientX: number, clientY: number): { cell: PhotoCellElement; point: { x: number; y: number } } | null => {
+      if (!scene) return null;
+      const point = scenePointer(clientX, clientY);
+      if (!point) return null;
+      const cell = hitTestCell(scene, point.x, point.y);
+      return cell ? { cell, point } : null;
+    },
+    [scene, scenePointer],
   );
 
   const handleWheel = useCallback(
     (event: Konva.KonvaEventObject<WheelEvent>) => {
-      if (!scene || !selectedId) return;
-      const element = scene.elements.find((el) => el.id === selectedId);
-      if (!element || element.type !== 'photoCell' || !element.assetId) return;
+      const hit = cellAt(event.evt.clientX, event.evt.clientY);
+      if (!hit) return;
       event.evt.preventDefault();
-      zoomSelectedCrop(event.evt.deltaY > 0 ? 0.94 : 1.06);
+      select(hit.cell.id);
+      zoomCellAt(hit.cell, event.evt.deltaY > 0 ? 0.94 : 1.06, hit.point);
     },
-    [scene, selectedId, zoomSelectedCrop],
+    [cellAt, select, zoomCellAt],
   );
 
-  // Pincement à deux doigts : même effet que la molette, sur tablette et mobile.
   const pinchDistance = useRef(0);
+  const pinchCellId = useRef<string | null>(null);
 
-  const handleTouchMove = useCallback(
-    (event: Konva.KonvaEventObject<TouchEvent>) => {
-      const touches = event.evt.touches;
-      if (touches.length !== 2) return;
-      const [first, second] = [touches[0], touches[1]];
-      if (!first || !second) return;
-      event.evt.preventDefault();
+  /** Interrompt le glissement de photo amorcé par le premier doigt. */
+  const stopDrags = useCallback(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    if (stage.isDragging()) stage.stopDrag();
+    stage.find('Image').forEach((node) => {
+      if (node.isDragging()) node.stopDrag();
+    });
+  }, []);
 
-      const distance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
-      if (pinchDistance.current) {
-        zoomSelectedCrop(distance / pinchDistance.current);
-      }
-      pinchDistance.current = distance;
-    },
-    [zoomSelectedCrop],
-  );
+  /**
+   * Pincement à deux doigts, branché directement sur le DOM. Konva cesse
+   * d'émettre ses propres événements tactiles dès qu'un glissement est en
+   * cours : passer par lui ne donnerait qu'un seul événement, puis plus rien.
+   */
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return undefined;
 
-  const handleTouchEnd = useCallback(() => {
-    if (pinchDistance.current) {
+    const onStart = (event: TouchEvent) => {
+      if (event.touches.length < 2) return;
+      // Le premier doigt a pu amorcer un glissement de la photo : on
+      // l'interrompt, sinon l'image saute quand le second doigt se pose.
+      stopDrags();
       pinchDistance.current = 0;
+      pinchCellId.current = null;
+    };
+
+    const onMove = (event: TouchEvent) => {
+      if (event.touches.length !== 2) return;
+      const [first, second] = [event.touches[0], event.touches[1]];
+      if (!first || !second || !scene) return;
+      event.preventDefault();
+      stopDrags();
+
+      const midX = (first.clientX + second.clientX) / 2;
+      const midY = (first.clientY + second.clientY) / 2;
+      const distance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+      const point = scenePointer(midX, midY);
+      if (!point) return;
+
+      // Le pincement reste attaché à la cellule où il a commencé, même si les
+      // doigts glissent au-delà de ses bords.
+      const pinned = pinchCellId.current
+        ? scene.elements.find(
+            (el): el is PhotoCellElement => el.id === pinchCellId.current && el.type === 'photoCell',
+          )
+        : undefined;
+      const cell = pinned ?? hitTestCell(scene, point.x, point.y);
+      if (!cell) {
+        pinchDistance.current = distance;
+        return;
+      }
+
+      if (!pinchCellId.current) {
+        pinchCellId.current = cell.id;
+        select(cell.id);
+      }
+      if (pinchDistance.current) zoomCellAt(cell, distance / pinchDistance.current, point);
+      pinchDistance.current = distance;
+    };
+
+    const onEnd = () => {
+      if (!pinchDistance.current && !pinchCellId.current) return;
+      pinchDistance.current = 0;
+      pinchCellId.current = null;
       commitHistory();
-    }
-  }, [commitHistory]);
+    };
+
+    container.addEventListener('touchstart', onStart, { passive: false });
+    container.addEventListener('touchmove', onMove, { passive: false });
+    container.addEventListener('touchend', onEnd);
+    container.addEventListener('touchcancel', onEnd);
+    return () => {
+      container.removeEventListener('touchstart', onStart);
+      container.removeEventListener('touchmove', onMove);
+      container.removeEventListener('touchend', onEnd);
+      container.removeEventListener('touchcancel', onEnd);
+    };
+  }, [scene, scenePointer, select, zoomCellAt, stopDrags, commitHistory]);
 
   if (!scene) return <div className="editor__stage" ref={containerRef} />;
 
@@ -209,8 +278,6 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
         scaleX={scale}
         scaleY={scale}
         onWheel={handleWheel}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         onMouseDown={(event) => {
           if (event.target === event.target.getStage()) select(null);
         }}
@@ -226,7 +293,7 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
               const placement = image
                 ? computePlacement(local, image.naturalWidth, image.naturalHeight)
                 : { x: 0, y: 0, width: element.w, height: element.h };
-              const isCropping = cropMode && selectedId === element.id && Boolean(image);
+
 
               return (
                 <Fragment key={element.id}>
@@ -237,32 +304,12 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   offsetX={element.w / 2}
                   offsetY={element.h / 2}
                   rotation={element.rotation ?? 0}
-                  draggable={!isCropping}
+                  draggable={false}
                   onClick={() => {
                     if (!placePendingAsset(element.id)) select(element.id);
                   }}
                   onTap={() => {
                     if (!placePendingAsset(element.id)) select(element.id);
-                  }}
-                  onDragEnd={(event) =>
-                    updateElement(element.id, {
-                      x: event.target.x() - element.w / 2,
-                      y: event.target.y() - element.h / 2,
-                    })
-                  }
-                  onTransformEnd={(event) => {
-                    const node = event.target;
-                    const w = Math.max(40, element.w * node.scaleX());
-                    const h = Math.max(40, element.h * node.scaleY());
-                    updateElement(element.id, {
-                      x: node.x() - w / 2,
-                      y: node.y() - h / 2,
-                      w,
-                      h,
-                      rotation: node.rotation(),
-                    });
-                    node.scaleX(1);
-                    node.scaleY(1);
                   }}
                   clipFunc={(ctx) => traceCellPath(ctx as unknown as PathSink, element)}
                 >
@@ -273,7 +320,7 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                       y={placement.y}
                       width={placement.width}
                       height={placement.height}
-                      draggable={isCropping}
+                      draggable
                       onDragMove={(event) => {
                         const base = computePlacement(
                           { ...local, crop: { ...element.crop, offsetX: 0, offsetY: 0 } },

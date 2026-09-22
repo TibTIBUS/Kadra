@@ -37,13 +37,11 @@ function ColorRow({
 }
 
 interface InspectorPanelProps {
-  cropMode: boolean;
-  onCropMode: (value: boolean) => void;
   /** Au doigt, la barre d'outils est réduite : les ajouts vivent ici. */
   showAddElements?: boolean;
 }
 
-export default function InspectorPanel({ cropMode, onCropMode, showAddElements }: InspectorPanelProps) {
+export default function InspectorPanel({ showAddElements }: InspectorPanelProps) {
   const project = useEditorStore((state) => state.project);
   const scene = useEditorStore((state) => state.scene);
   const selectedId = useEditorStore((state) => state.selectedId);
@@ -217,18 +215,6 @@ export default function InspectorPanel({ cropMode, onCropMode, showAddElements }
           </div>
 
           <div className="field">
-            <label>Inclinaison — {Math.round(selected.rotation ?? 0)}°</label>
-            <input
-              type="range"
-              min={-30}
-              max={30}
-              step={0.5}
-              value={selected.rotation ?? 0}
-              onChange={(event) => patch({ rotation: Number(event.target.value) })}
-            />
-          </div>
-
-          <div className="field">
             <label>Cadre — {selected.strokeWidth ?? 0} px</label>
             <input
               type="range"
@@ -261,17 +247,12 @@ export default function InspectorPanel({ cropMode, onCropMode, showAddElements }
 
           <div className="field">
             <label>Recadrage</label>
-            <button
-              type="button"
-              className={`btn btn--sm${cropMode ? ' btn--primary' : ''}`}
-              onClick={() => onCropMode(!cropMode)}
-            >
-              {cropMode ? 'Recadrage actif' : 'Recadrer la photo'}
-            </button>
             <span className="hint">
-              En recadrage : glissez la photo, molette pour zoomer. La cellule reste fixe.
+              Le cadre est fixe. Faites glisser la photo pour la déplacer dedans, et pincez à deux
+              doigts — ou utilisez la molette — pour zoomer.
             </span>
           </div>
+
           {(selected.mask?.type ?? 'rect') === 'rect' ? (
             <div className="field">
               <label>Arrondi des coins — {Math.round(selected.radius ?? 0)} px</label>

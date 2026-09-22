@@ -42,7 +42,6 @@ export default function EditorPage() {
   const selectedId = useEditorStore((state) => state.selectedId);
   const removeElement = useEditorStore((state) => state.removeElement);
 
-  const [cropMode, setCropMode] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -184,9 +183,9 @@ export default function EditorPage() {
       </div>
 
       {!isMobile ? <PhotoPanel /> : null}
-      <EditorCanvas cropMode={cropMode} zoom={zoom} onDropAsset={handleDropAsset} />
+      <EditorCanvas zoom={zoom} onDropAsset={handleDropAsset} />
       {!isMobile ? (
-        <InspectorPanel cropMode={cropMode} onCropMode={setCropMode} />
+        <InspectorPanel />
       ) : null}
 
       {isMobile ? (
@@ -251,7 +250,7 @@ export default function EditorPage() {
                 {sheet === 'photos' ? (
                   <PhotoPanel />
                 ) : (
-                  <InspectorPanel cropMode={cropMode} onCropMode={setCropMode} showAddElements />
+                  <InspectorPanel showAddElements />
                 )}
               </div>
             </div>

@@ -60,9 +60,10 @@ La protection de l'URL se fait via le mot de passe de site Netlify (selon le pla
   N × 1080 px de large, découpée en N images à l'export.
 - **Photos** : glisser-déposer multi-fichiers, JPEG / PNG / WEBP / **HEIC** (converti en JPEG
   côté client), redimensionnement à 3000 px max, aperçu 1200 px pour l'éditeur.
-- **Éditeur Konva** : cellules photo avec recadrage (déplacement + zoom molette ou pincement,
-  la cellule reste fixe), découpes sur mesure, inclinaison, cadres, textes, formes, palette
-  imposée, ajout/retrait de slides, undo/redo 50 niveaux (Ctrl+Z / Ctrl+Maj+Z).
+- **Éditeur Konva** : les cadres photo des templates sont **verrouillés** — un doigt déplace la
+  photo dans son cadre, deux doigts la zooment, le cadre ne bouge jamais. Découpes sur mesure,
+  cadres, textes et formes libres, palette imposée, ajout/retrait de slides, undo/redo 50
+  niveaux (Ctrl+Z / Ctrl+Maj+Z).
 - **Repères d'édition** : lignes de découpe entre slides, zone de sécurité de 60 px, bande du
   recadrage 3:4 de la grille du profil, alerte si un texte chevauche une découpe. Ces repères
   sont dessinés dans une couche dédiée et **n'existent pas au rendu d'export**.
@@ -117,6 +118,22 @@ pivot commun.
 Les textes posés sur une photo reçoivent un **voile dégradé** : c'est ce qui sépare un visuel
 lisible d'un titre noyé dans l'image. Les grands titres portent un interlettrage négatif, les
 petites capitales un interlettrage ouvert.
+
+### Cadres verrouillés et gestes
+
+Un cadre photo de template ne se déplace pas et ne se redimensionne pas : ni poignée de
+transformation, ni glissement. La mise en page reste celle du template, quel que soit le geste.
+Seule la photo bouge à l'intérieur — glissement à un doigt ou à la souris, pincement à deux
+doigts ou molette pour le zoom. Textes et formes, eux, restent librement déplaçables.
+
+Le zoom est **ancré** sur le point visé (curseur, ou milieu des deux doigts) : sans cela
+l'image fuit sous le doigt pendant le pincement. Le décalage est borné à chaque instant, la
+photo ne peut donc jamais laisser apparaître un vide dans son cadre.
+
+Le pincement est branché sur des écouteurs DOM plutôt que sur le système d'événements de
+Konva : dès qu'un glissement est en cours, Konva cesse d'émettre ses propres événements
+tactiles et le geste ne recevrait qu'un seul événement, puis plus rien. Quand le second doigt
+se pose, le glissement amorcé par le premier est interrompu, sinon l'image saute.
 
 ### Enregistrer dans la pellicule
 
