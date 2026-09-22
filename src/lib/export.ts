@@ -33,7 +33,11 @@ export async function loadImageMap(
 }
 
 /** Rend la scène complète, sans aucun repère d'édition, à sa résolution exacte. */
-export async function renderSceneCanvas(scene: Scene, images: ImageMap): Promise<HTMLCanvasElement> {
+export async function renderSceneCanvas(
+  scene: Scene,
+  images: ImageMap,
+  pixelRatio = 1,
+): Promise<HTMLCanvasElement> {
   await ensureFontsReady();
   const { stage, dispose } = createOffscreenStage(scene);
   try {
@@ -42,7 +46,7 @@ export async function renderSceneCanvas(scene: Scene, images: ImageMap): Promise
     stage.add(layer);
     drawScene(layer, scene, images);
     layer.draw();
-    return stage.toCanvas({ pixelRatio: 1 });
+    return stage.toCanvas({ pixelRatio });
   } finally {
     dispose();
   }

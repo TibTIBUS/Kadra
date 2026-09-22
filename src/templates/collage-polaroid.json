@@ -3,72 +3,69 @@
   "name": "Polaroid",
   "category": "collage",
   "description": "Photo encadrée de blanc, légèrement inclinée, ombre portée.",
-  "slideCount": 1,
+  "defaultSlides": 1,
   "formats": [
     "collage_portrait",
     "collage_square"
   ],
-  "scene": {
-    "width": 1080,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "gradient",
-      "from": "#0f3d2e",
-      "to": "#08201a",
-      "angle": 90
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "gradient",
+    "from": "#0f3d2e",
+    "to": "#08201a",
+    "angle": 90
+  },
+  "body": [
+    {
+      "id": "s1",
+      "type": "shape",
+      "shape": "rect",
+      "x": 142.13669888372,
+      "y": 229.93471794476534,
+      "w": 800,
+      "h": 960,
+      "fill": "#ffffff",
+      "radius": 0,
+      "shadow": {
+        "color": "#000000",
+        "blur": 70,
+        "offsetX": 0,
+        "offsetY": 30,
+        "opacity": 0.5
+      },
+      "rotation": -3.5
     },
-    "elements": [
-      {
-        "id": "s1",
-        "type": "shape",
-        "shape": "rect",
-        "x": 142.13669888372,
-        "y": 229.93471794476534,
-        "w": 800,
-        "h": 960,
-        "fill": "#ffffff",
-        "radius": 0,
-        "shadow": {
-          "color": "#000000",
-          "blur": 70,
-          "offsetX": 0,
-          "offsetY": 30,
-          "opacity": 0.5
-        },
-        "rotation": -3.5
+    {
+      "id": "c2",
+      "type": "photoCell",
+      "x": 186.96217482790746,
+      "y": 278.03170842682823,
+      "w": 704,
+      "h": 760,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 186.96217482790746,
-        "y": 278.03170842682823,
-        "w": 704,
-        "h": 760,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "rotation": -3.5
-      },
-      {
-        "id": "t3",
-        "type": "text",
-        "x": 212.7707240717713,
-        "y": 1090.752331292907,
-        "w": 704,
-        "text": "Été 2026",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 60,
-        "color": "#111111",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": -1.3199999999999998,
-        "rotation": -3.5
-      }
-    ]
-  }
+      "rotation": -3.5
+    },
+    {
+      "id": "t3",
+      "type": "text",
+      "x": 212.7707240717713,
+      "y": 1090.752331292907,
+      "w": 704,
+      "text": "Été 2026",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 60,
+      "color": "#111111",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": -1.3199999999999998,
+      "rotation": -3.5
+    }
+  ]
 }

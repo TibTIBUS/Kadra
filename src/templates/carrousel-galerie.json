@@ -1,9 +1,9 @@
 {
-  "id": "carrousel-panorama",
-  "name": "Panorama plein cadre",
+  "id": "carrousel-galerie",
+  "name": "Galerie plein cadre",
   "category": "carousel",
-  "description": "Une seule photo panoramique qui traverse tout le carrousel.",
-  "defaultSlides": 3,
+  "description": "Une photo plein cadre par slide, numérotée.",
+  "defaultSlides": 5,
   "formats": [
     "carousel_portrait",
     "carousel_square"
@@ -14,13 +14,13 @@
     "type": "solid",
     "color": "#111111"
   },
-  "full": [
+  "body": [
     {
       "id": "c1",
       "type": "photoCell",
       "x": 0,
       "y": 0,
-      "w": 1,
+      "w": 1080,
       "h": 1350,
       "radius": 0,
       "crop": {
@@ -28,17 +28,15 @@
         "offsetY": 0,
         "scale": 1
       }
-    }
-  ],
-  "lead": [
+    },
     {
       "id": "s2",
       "type": "shape",
       "shape": "rect",
       "x": 0,
-      "y": 675,
+      "y": 1050,
       "w": 1080,
-      "h": 675,
+      "h": 300,
       "radius": 0,
       "gradient": {
         "from": "rgba(0,0,0,0)",
@@ -50,31 +48,16 @@
       "id": "t3",
       "type": "text",
       "x": 72,
-      "y": 1088,
+      "y": 1230,
       "w": 936,
-      "text": "FAITES\nGLISSER",
+      "text": "Localia",
       "font": "Poppins",
-      "weight": 800,
-      "size": 76,
+      "weight": 600,
+      "size": 38,
       "color": "#ffffff",
       "align": "left",
-      "lineHeight": 1.02,
-      "letterSpacing": -1.672
-    },
-    {
-      "id": "s4",
-      "type": "shape",
-      "shape": "line",
-      "x": 72,
-      "y": 1218,
-      "points": [
-        0,
-        0,
-        90,
-        0
-      ],
-      "stroke": "#ef8a3f",
-      "strokeWidth": 8
+      "lineHeight": 1.28,
+      "letterSpacing": 4.56
     }
   ]
 }

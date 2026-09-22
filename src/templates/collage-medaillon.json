@@ -3,94 +3,91 @@
   "name": "Médaillon",
   "category": "collage",
   "description": "Un portrait en cercle sur aplat, pour une présentation.",
-  "slideCount": 1,
+  "defaultSlides": 1,
   "formats": [
     "collage_portrait",
     "collage_square"
   ],
-  "scene": {
-    "width": 1080,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "body": [
+    {
+      "id": "s1",
+      "type": "shape",
+      "shape": "circle",
+      "x": 540,
+      "y": 470,
+      "r": 330,
+      "fill": "#7ed6ad",
+      "opacity": 0.18
     },
-    "elements": [
-      {
-        "id": "s1",
-        "type": "shape",
-        "shape": "circle",
-        "x": 540,
-        "y": 470,
-        "r": 330,
-        "fill": "#7ed6ad",
-        "opacity": 0.18
+    {
+      "id": "c2",
+      "type": "photoCell",
+      "x": 240,
+      "y": 170,
+      "w": 600,
+      "h": 600,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 240,
-        "y": 170,
-        "w": 600,
-        "h": 600,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "mask": {
-          "type": "ellipse"
-        },
-        "stroke": "#7ed6ad",
-        "strokeWidth": 8
+      "mask": {
+        "type": "ellipse"
       },
-      {
-        "id": "t3",
-        "type": "text",
-        "x": 72,
-        "y": 860,
-        "w": 936,
-        "text": "THIBAUT",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 96,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.02,
-        "letterSpacing": -3.3600000000000003
-      },
-      {
-        "id": "t4",
-        "type": "text",
-        "x": 72,
-        "y": 990,
-        "w": 936,
-        "text": "Fondateur · Localia",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 38,
-        "color": "#7ed6ad",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": 4.56
-      },
-      {
-        "id": "s5",
-        "type": "shape",
-        "shape": "line",
-        "x": 480,
-        "y": 1090,
-        "points": [
-          0,
-          0,
-          120,
-          0
-        ],
-        "stroke": "#ef8a3f",
-        "strokeWidth": 8
-      }
-    ]
-  }
+      "stroke": "#7ed6ad",
+      "strokeWidth": 8
+    },
+    {
+      "id": "t3",
+      "type": "text",
+      "x": 72,
+      "y": 860,
+      "w": 936,
+      "text": "THIBAUT",
+      "font": "Poppins",
+      "weight": 800,
+      "size": 96,
+      "color": "#ffffff",
+      "align": "center",
+      "lineHeight": 1.02,
+      "letterSpacing": -3.3600000000000003
+    },
+    {
+      "id": "t4",
+      "type": "text",
+      "x": 72,
+      "y": 990,
+      "w": 936,
+      "text": "Fondateur · Localia",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 38,
+      "color": "#7ed6ad",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": 4.56
+    },
+    {
+      "id": "s5",
+      "type": "shape",
+      "shape": "line",
+      "x": 480,
+      "y": 1090,
+      "points": [
+        0,
+        0,
+        120,
+        0
+      ],
+      "stroke": "#ef8a3f",
+      "strokeWidth": 8
+    }
+  ]
 }

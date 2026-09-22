@@ -26,7 +26,7 @@ export default function NewProjectDialog({ onClose, onCreated }: Props) {
 
   const pickTemplate = (template: TemplateDefinition) => {
     setTemplateId(template.id);
-    if (spec.isCarousel) setSlideCount(clampSlideCount(format, template.slideCount));
+    if (spec.isCarousel) setSlideCount(clampSlideCount(format, template.defaultSlides));
   };
 
   const create = async () => {
@@ -141,12 +141,24 @@ export default function NewProjectDialog({ onClose, onCreated }: Props) {
               aria-pressed={templateId === template.id}
               onClick={() => pickTemplate(template)}
             >
-              <TemplateThumb template={template} />
+              {/* La miniature illustre le style du template : on la rend une
+                  seule fois, au nombre de slides par défaut. La re-calculer à
+                  chaque mouvement du curseur coûtait plusieurs secondes. */}
+              <TemplateThumb
+                template={template}
+                format={format}
+                slideCount={clampSlideCount(format, template.defaultSlides)}
+              />
               <div className="template-card__label">
                 <div className="choice__title">{template.name}</div>
                 <span className="muted" style={{ fontSize: 12 }}>
                   {template.description}
                 </span>
+                <div className="tag" style={{ marginTop: 6 }}>
+                  {template.photoSlots?.(effectiveSlides) ?? 0} photo
+                  {(template.photoSlots?.(effectiveSlides) ?? 0) > 1 ? 's' : ''} pour{' '}
+                  {effectiveSlides} slide{effectiveSlides > 1 ? 's' : ''}
+                </div>
               </div>
             </button>
           ))}

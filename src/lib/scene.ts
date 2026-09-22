@@ -147,20 +147,63 @@ export function textsCrossingCut(scene: Scene): TextElement[] {
   );
 }
 
-/** Ajoute une slide à droite et y place une cellule photo pleine page. */
+/** Un élément couvre-t-il toute la largeur de la scène ? */
+function spansScene(element: SceneElement, sceneWidth: number, tolerance = 80): boolean {
+  if (element.type === 'shape' && element.shape === 'line') {
+    const points = element.points ?? [];
+    const xs = points.filter((_, index) => index % 2 === 0);
+    if (!xs.length) return false;
+    return element.x + Math.min(...xs) <= tolerance && element.x + Math.max(...xs) >= sceneWidth - tolerance;
+  }
+  const bounds = elementBounds(element);
+  return bounds.x <= tolerance && bounds.x + bounds.w >= sceneWidth - tolerance;
+}
+
+/**
+ * Ajoute une slide. Les éléments qui traversaient déjà toute la scène —
+ * photo panoramique, ligne de fil conducteur — sont étirés d'autant : sans
+ * cela un panorama de 3 slides passé à 10 garderait sa photo sur 3 slides et
+ * recevrait 7 cellules isolées, ce qui n'a aucun sens.
+ */
 export function addSlide(scene: Scene): Scene {
   const next = cloneScene(scene);
   const index = slideCountOf(next);
-  next.width += next.slideWidth;
-  next.elements.push(
-    createPhotoCell({
-      x: index * next.slideWidth + SAFE_MARGIN,
-      y: SAFE_MARGIN,
-      w: next.slideWidth - SAFE_MARGIN * 2,
-      h: next.height - SAFE_MARGIN * 2,
-      radius: 24,
-    }),
-  );
+  const previousWidth = next.width;
+  const newWidth = previousWidth + next.slideWidth;
+  const growth = newWidth / previousWidth;
+
+  let stretched = false;
+  next.elements = next.elements.map((element) => {
+    if (!spansScene(element, previousWidth)) return element;
+    stretched = true;
+    if (element.type === 'photoCell') return { ...element, w: element.w * growth };
+    if (element.type === 'text') return { ...element, w: element.w * growth };
+    if (element.type === 'shape' && element.shape === 'line') {
+      return {
+        ...element,
+        points: (element.points ?? []).map((value, i) => (i % 2 === 0 ? value * growth : value)),
+      };
+    }
+    if (element.type === 'shape' && element.shape === 'rect') {
+      return { ...element, w: (element.w ?? 0) * growth };
+    }
+    return element;
+  });
+
+  next.width = newWidth;
+
+  // Aucune composition continue à étirer : la nouvelle slide reçoit sa cellule.
+  if (!stretched) {
+    next.elements.push(
+      createPhotoCell({
+        x: index * next.slideWidth + SAFE_MARGIN,
+        y: SAFE_MARGIN,
+        w: next.slideWidth - SAFE_MARGIN * 2,
+        h: next.height - SAFE_MARGIN * 2,
+        radius: 6,
+      }),
+    );
+  }
   return next;
 }
 
@@ -170,8 +213,32 @@ export function removeSlide(scene: Scene): Scene {
   const count = slideCountOf(next);
   if (count <= 1) return next;
   const cutX = (count - 1) * next.slideWidth;
+  const shrink = cutX / next.width;
+
+  // Symétrique de addSlide : ce qui traversait toute la scène se rétracte.
+  const spanning = new Set(
+    next.elements.filter((element) => spansScene(element, next.width)).map((element) => element.id),
+  );
+  if (spanning.size) {
+    next.elements = next.elements.map((element) => {
+      if (!spanning.has(element.id)) return element;
+      if (element.type === 'photoCell') return { ...element, w: element.w * shrink };
+      if (element.type === 'text') return { ...element, w: element.w * shrink };
+      if (element.type === 'shape' && element.shape === 'line') {
+        return {
+          ...element,
+          points: (element.points ?? []).map((value, i) => (i % 2 === 0 ? value * shrink : value)),
+        };
+      }
+      if (element.type === 'shape' && element.shape === 'rect') {
+        return { ...element, w: (element.w ?? 0) * shrink };
+      }
+      return element;
+    });
+  }
   next.elements = next.elements.filter((element) => elementBounds(element).x < cutX);
   next.elements = next.elements.map((element) => {
+    if (spanning.has(element.id)) return element;
     const bounds = elementBounds(element);
     if (bounds.x + bounds.w <= cutX) return element;
     // L'élément déborde sur la slide supprimée : on le rétrécit.

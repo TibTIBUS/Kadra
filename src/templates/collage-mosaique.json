@@ -3,88 +3,85 @@
   "name": "Mosaïque asymétrique",
   "category": "collage",
   "description": "Trois formats différents, équilibre asymétrique.",
-  "slideCount": 1,
+  "defaultSlides": 1,
   "formats": [
     "collage_portrait",
     "collage_square"
   ],
-  "scene": {
-    "width": 1080,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
-    },
-    "elements": [
-      {
-        "id": "c1",
-        "type": "photoCell",
-        "x": 72,
-        "y": 72,
-        "w": 560,
-        "h": 560,
-        "radius": 6,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 650,
-        "y": 72,
-        "w": 358,
-        "h": 560,
-        "radius": 6,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "c3",
-        "type": "photoCell",
-        "x": 72,
-        "y": 650,
-        "w": 936,
-        "h": 628,
-        "radius": 6,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "s4",
-        "type": "shape",
-        "shape": "rect",
-        "x": 100,
-        "y": 100,
-        "w": 211.2,
-        "h": 63,
-        "fill": "#ef8a3f",
-        "radius": 31.5
-      },
-      {
-        "id": "t5",
-        "type": "text",
-        "x": 100,
-        "y": 109.9,
-        "w": 211.2,
-        "text": "LOCALIA",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 30,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": 3.5999999999999996
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "body": [
+    {
+      "id": "c1",
+      "type": "photoCell",
+      "x": 72,
+      "y": 72,
+      "w": 560,
+      "h": 560,
+      "radius": 6,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       }
-    ]
-  }
+    },
+    {
+      "id": "c2",
+      "type": "photoCell",
+      "x": 650,
+      "y": 72,
+      "w": 358,
+      "h": 560,
+      "radius": 6,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
+      }
+    },
+    {
+      "id": "c3",
+      "type": "photoCell",
+      "x": 72,
+      "y": 650,
+      "w": 936,
+      "h": 628,
+      "radius": 6,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
+      }
+    },
+    {
+      "id": "s4",
+      "type": "shape",
+      "shape": "rect",
+      "x": 100,
+      "y": 100,
+      "w": 211.2,
+      "h": 63,
+      "fill": "#ef8a3f",
+      "radius": 31.5
+    },
+    {
+      "id": "t5",
+      "type": "text",
+      "x": 100,
+      "y": 109.9,
+      "w": 211.2,
+      "text": "LOCALIA",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 30,
+      "color": "#ffffff",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": 3.5999999999999996
+    }
+  ]
 }

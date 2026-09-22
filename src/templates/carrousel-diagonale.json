@@ -2,101 +2,100 @@
   "id": "carrousel-diagonale",
   "name": "Diagonale continue",
   "category": "carousel",
-  "description": "Une découpe oblique qui traverse les trois slides sans rupture.",
-  "slideCount": 3,
+  "description": "Deux photos séparées par une découpe oblique qui traverse tout le carrousel.",
+  "defaultSlides": 3,
   "formats": [
     "carousel_portrait",
     "carousel_square"
   ],
-  "scene": {
-    "width": 3240,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
-    },
-    "elements": [
-      {
-        "id": "c1",
-        "type": "photoCell",
-        "x": 0,
-        "y": 0,
-        "w": 3240,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "mask": {
-          "type": "polygon",
-          "points": [
-            0,
-            0,
-            1,
-            0,
-            1,
-            0.5948148148148149,
-            0,
-            0.4948148148148148
-          ]
-        }
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "full": [
+    {
+      "id": "c1",
+      "type": "photoCell",
+      "x": 0,
+      "y": 0,
+      "w": 1,
+      "h": 1350,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 0,
-        "y": 0,
-        "w": 3240,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "mask": {
-          "type": "polygon",
-          "points": [
-            0,
-            0.5051851851851852,
-            1,
-            0.6051851851851853,
-            1,
-            1,
-            0,
-            1
-          ]
-        }
-      },
-      {
-        "id": "s3",
-        "type": "shape",
-        "shape": "rect",
-        "x": 72,
-        "y": 72,
-        "w": 211.2,
-        "h": 63,
-        "fill": "#ef8a3f",
-        "radius": 31.5
-      },
-      {
-        "id": "t4",
-        "type": "text",
-        "x": 72,
-        "y": 81.9,
-        "w": 211.2,
-        "text": "LOCALIA",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 30,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": 3.5999999999999996
+      "mask": {
+        "type": "polygon",
+        "points": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0.5948148148148149,
+          0,
+          0.4948148148148148
+        ]
       }
-    ]
-  }
+    },
+    {
+      "id": "c2",
+      "type": "photoCell",
+      "x": 0,
+      "y": 0,
+      "w": 1,
+      "h": 1350,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
+      },
+      "mask": {
+        "type": "polygon",
+        "points": [
+          0,
+          0.5051851851851852,
+          1,
+          0.6051851851851853,
+          1,
+          1,
+          0,
+          1
+        ]
+      }
+    }
+  ],
+  "lead": [
+    {
+      "id": "s3",
+      "type": "shape",
+      "shape": "rect",
+      "x": 72,
+      "y": 72,
+      "w": 211.2,
+      "h": 63,
+      "fill": "#ef8a3f",
+      "radius": 31.5
+    },
+    {
+      "id": "t4",
+      "type": "text",
+      "x": 72,
+      "y": 81.9,
+      "w": 211.2,
+      "text": "LOCALIA",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 30,
+      "color": "#ffffff",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": 3.5999999999999996
+    }
+  ]
 }

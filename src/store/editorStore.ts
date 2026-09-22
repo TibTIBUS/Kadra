@@ -294,5 +294,11 @@ export const useEditorStore = create<EditorState>((set, get) => ({
   },
 }));
 
+// Exposé pour les tests de bout en bout : permet d'inspecter la scène en cours
+// sans attendre l'autosave.
+if (typeof window !== 'undefined') {
+  (window as unknown as { __kadraStore: typeof useEditorStore }).__kadraStore = useEditorStore;
+}
+
 export const canUndo = (state: EditorState) => state.past.length > 0;
 export const canRedo = (state: EditorState) => state.future.length > 0;

@@ -2,145 +2,116 @@
   "id": "carrousel-cta",
   "name": "Galerie + appel à l'action",
   "category": "carousel",
-  "description": "Trois photos plein cadre, puis une slide d'appel à l'action.",
-  "slideCount": 4,
+  "description": "Une photo par slide, puis une slide finale d'appel à l'action.",
+  "defaultSlides": 4,
   "formats": [
     "carousel_portrait",
     "carousel_square"
   ],
-  "scene": {
-    "width": 4320,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
-    },
-    "elements": [
-      {
-        "id": "c1",
-        "type": "photoCell",
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 1080,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "c3",
-        "type": "photoCell",
-        "x": 2160,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "s4",
-        "type": "shape",
-        "shape": "rect",
-        "x": 3240,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "fill": "#7ed6ad",
-        "radius": 0
-      },
-      {
-        "id": "t5",
-        "type": "text",
-        "x": 3312,
-        "y": 340,
-        "w": 936,
-        "text": "ON EN\nPARLE ?",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 154,
-        "color": "#0f3d2e",
-        "align": "left",
-        "lineHeight": 1.02,
-        "letterSpacing": -5.390000000000001
-      },
-      {
-        "id": "s6",
-        "type": "shape",
-        "shape": "line",
-        "x": 3312,
-        "y": 700,
-        "points": [
-          0,
-          0,
-          140,
-          0
-        ],
-        "stroke": "#ef8a3f",
-        "strokeWidth": 10
-      },
-      {
-        "id": "t7",
-        "type": "text",
-        "x": 3312,
-        "y": 760,
-        "w": 856,
-        "text": "Écrivez-nous, on répond sous 24 h.",
-        "font": "Poppins",
-        "weight": 400,
-        "size": 48,
-        "color": "#0f3d2e",
-        "align": "left",
-        "lineHeight": 1.4,
-        "letterSpacing": 0
-      },
-      {
-        "id": "s8",
-        "type": "shape",
-        "shape": "rect",
-        "x": 3312,
-        "y": 920,
-        "w": 276,
-        "h": 63,
-        "fill": "#0f3d2e",
-        "radius": 31.5
-      },
-      {
-        "id": "t9",
-        "type": "text",
-        "x": 3312,
-        "y": 929.9,
-        "w": 276,
-        "text": "LOCALIA.FR",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 30,
-        "color": "#7ed6ad",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": 3.5999999999999996
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "body": [
+    {
+      "id": "c1",
+      "type": "photoCell",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1350,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       }
-    ]
-  }
+    }
+  ],
+  "tail": [
+    {
+      "id": "s2",
+      "type": "shape",
+      "shape": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1350,
+      "fill": "#7ed6ad",
+      "radius": 0
+    },
+    {
+      "id": "t3",
+      "type": "text",
+      "x": 72,
+      "y": 340,
+      "w": 936,
+      "text": "ON EN\nPARLE ?",
+      "font": "Poppins",
+      "weight": 800,
+      "size": 154,
+      "color": "#0f3d2e",
+      "align": "left",
+      "lineHeight": 1.02,
+      "letterSpacing": -5.390000000000001
+    },
+    {
+      "id": "s4",
+      "type": "shape",
+      "shape": "line",
+      "x": 72,
+      "y": 700,
+      "points": [
+        0,
+        0,
+        140,
+        0
+      ],
+      "stroke": "#ef8a3f",
+      "strokeWidth": 10
+    },
+    {
+      "id": "t5",
+      "type": "text",
+      "x": 72,
+      "y": 760,
+      "w": 856,
+      "text": "Écrivez-nous, on répond sous 24 h.",
+      "font": "Poppins",
+      "weight": 400,
+      "size": 48,
+      "color": "#0f3d2e",
+      "align": "left",
+      "lineHeight": 1.4,
+      "letterSpacing": 0
+    },
+    {
+      "id": "s6",
+      "type": "shape",
+      "shape": "rect",
+      "x": 72,
+      "y": 920,
+      "w": 276,
+      "h": 63,
+      "fill": "#0f3d2e",
+      "radius": 31.5
+    },
+    {
+      "id": "t7",
+      "type": "text",
+      "x": 72,
+      "y": 929.9,
+      "w": 276,
+      "text": "LOCALIA.FR",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 30,
+      "color": "#7ed6ad",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": 3.5999999999999996
+    }
+  ]
 }

@@ -151,27 +151,46 @@ const solid = (color) => ({ type: 'solid', color });
 const gradient = (from, to, angle = 90) => ({ type: 'gradient', from, to, angle });
 
 const templates = [];
-const add = (slug, name, category, description, slideCount, background, elements) => {
+
+/**
+ * Un template décrit un motif, pas une scène figée :
+ *  - `full` : éléments traversant tout le carrousel. x et w en fraction de la
+ *    largeur totale, ils s'étirent donc avec le nombre de slides.
+ *  - `lead` / `body` / `tail` : première slide, motif répété, dernière slide,
+ *    en coordonnées locales à une slide.
+ */
+const add = (id, name, category, description, defaultSlides, background, parts) => {
   n = 0;
   templates.push({
-    id: slug, name, category, description, slideCount,
-    formats: category === 'collage' ? ['collage_portrait', 'collage_square'] : ['carousel_portrait', 'carousel_square'],
-    scene: { width: W * slideCount, height: H, slideWidth: W, background, elements: elements.flat(Infinity) },
+    id, name, category, description, defaultSlides,
+    formats: category === 'collage'
+      ? ['collage_portrait', 'collage_square']
+      : ['carousel_portrait', 'carousel_square'],
+    refHeight: H,
+    refSlideWidth: W,
+    background,
+    ...Object.fromEntries(
+      Object.entries(parts).map(([key, value]) => [key, (value ?? []).flat(Infinity)]),
+    ),
   });
 };
 
-/* ================================= COLLAGES ================================= */
+/* ================================= COLLAGES =================================
+ * Une seule slide : tout tient dans `body`.
+ * ========================================================================== */
 
 // 1. La découpe oblique, faite correctement.
 {
   const split = diagonalPair(0.14, 0.52, 12);
   add('collage-split-diagonal', 'Split diagonal', 'collage',
     'Deux photos séparées par une vraie découpe oblique, sans recouvrement.', 1,
-    solid(P.vert), [
-      polyCell(0, 0, W, H, split.haut),
-      polyCell(0, 0, W, H, split.bas),
-      ...pill(M, H - M - T.xs * 2.1, 'AVANT / APRÈS', P.orange, P.blanc),
-    ]);
+    solid(P.vert), {
+      body: [
+        polyCell(0, 0, W, H, split.haut),
+        polyCell(0, 0, W, H, split.bas),
+        pill(M, H - M - T.xs * 2.1, 'AVANT / APRÈS', P.orange, P.blanc),
+      ],
+    });
 }
 
 // 2. Plein cadre, voile de lisibilité, titre serré.
@@ -180,243 +199,277 @@ const add = (slug, name, category, description, slideCount, background, elements
   const titleTop = H - M - 150 - titleSize * 1.02 * 2;
   add('collage-plein-cadre', 'Photo plein cadre', 'collage',
     'Une photo pleine page, voile dégradé et titre en bas.', 1,
-    solid(P.noir), [
-      cell(0, 0, W, H),
-      scrim(0, H * 0.42, W, H * 0.58),
-      text(M, titleTop, CW, 'UN TITRE\nQUI PORTE', { size: titleSize, color: P.blanc }),
-      line(M, H - M - 92, [0, 0, 120, 0], P.orange, 8),
-      text(M, H - M - 58, CW, 'Localia · Normandie', {
-        size: T.sm, weight: 600, color: P.menthe, caps: true,
-      }),
-    ]);
+    solid(P.noir), {
+      body: [
+        cell(0, 0, W, H),
+        scrim(0, H * 0.42, W, H * 0.58),
+        text(M, titleTop, CW, 'UN TITRE\nQUI PORTE', { size: titleSize, color: P.blanc }),
+        line(M, H - M - 92, [0, 0, 120, 0], P.orange, 8),
+        text(M, H - M - 58, CW, 'Localia · Normandie', { size: T.sm, weight: 600, color: P.menthe, caps: true }),
+      ],
+    });
 }
 
 // 3. Bandeau éditorial : la photo chevauche le bloc de couleur.
 add('collage-editorial', 'Bandeau éditorial', 'collage',
   'Un bloc de couleur et une photo qui le chevauche, pour la profondeur.', 1,
-  solid(P.vert), [
-    rect(0, 0, W, 620, P.menthe),
-    text(M, 120, CW - 120, 'NOS\nRÉALISATIONS', { size: T.xxl, color: P.vert }),
-    cell(M, 470, CW, 700, {
-      radius: 8,
-      shadow: { color: '#000000', blur: 60, offsetX: 0, offsetY: 24, opacity: 0.45 },
-    }),
-    text(M, H - 108, CW, 'localia.fr', { size: T.sm, weight: 600, color: P.menthe, caps: true }),
-  ]);
+  solid(P.vert), {
+    body: [
+      rect(0, 0, W, 620, P.menthe),
+      text(M, 120, CW - 120, 'NOS\nRÉALISATIONS', { size: T.xxl, color: P.vert }),
+      cell(M, 470, CW, 700, {
+        radius: 8,
+        shadow: { color: '#000000', blur: 60, offsetX: 0, offsetY: 24, opacity: 0.45 },
+      }),
+      text(M, H - 108, CW, 'localia.fr', { size: T.sm, weight: 600, color: P.menthe, caps: true }),
+    ],
+  });
 
-// 4. Grille 2 photos, gouttière fine, légende sobre.
+// 4. Duo vertical.
 add('collage-duo', 'Duo vertical', 'collage',
   'Deux photos superposées, gouttière fine et légende.', 1,
-  solid(P.vert), [
-    cell(M, M, CW, 560, { radius: 6 }),
-    cell(M, M + 560 + G, CW, 560, { radius: 6 }),
-    text(M, M + 560 * 2 + G + 40, CW, 'Deux moments, une histoire', {
-      size: T.lg, color: P.menthe,
-    }),
-  ]);
+  solid(P.vert), {
+    body: [
+      cell(M, M, CW, 560, { radius: 6 }),
+      cell(M, M + 560 + G, CW, 560, { radius: 6 }),
+      text(M, M + 560 * 2 + G + 40, CW, 'Deux moments, une histoire', { size: T.lg, color: P.menthe }),
+    ],
+  });
 
 // 5. Héro + deux vignettes.
 add('collage-hero', 'Héro + vignettes', 'collage',
   'Une grande photo et deux vignettes, hiérarchie nette.', 1,
-  solid(P.noir), [
-    cell(M, M, CW, 780, { radius: 6 }),
-    cell(M, M + 780 + G, (CW - G) / 2, 340, { radius: 6 }),
-    cell(M + (CW - G) / 2 + G, M + 780 + G, (CW - G) / 2, 340, { radius: 6 }),
-    text(M, M + 780 + G + 340 + 34, CW, 'Reportage', {
-      size: T.sm, weight: 600, color: P.orange, caps: true,
-    }),
-  ]);
+  solid(P.noir), {
+    body: [
+      cell(M, M, CW, 780, { radius: 6 }),
+      cell(M, M + 780 + G, (CW - G) / 2, 340, { radius: 6 }),
+      cell(M + (CW - G) / 2 + G, M + 780 + G, (CW - G) / 2, 340, { radius: 6 }),
+      text(M, M + 780 + G + 340 + 34, CW, 'Reportage', { size: T.sm, weight: 600, color: P.orange, caps: true }),
+    ],
+  });
 
-// 6. Grille 4, gouttière serrée.
+// 6. Grille 4.
 {
   const size = (CW - G) / 2;
+  const top = (H - (size * 2 + G)) / 2;
   add('collage-grille-4', 'Grille 4 photos', 'collage',
     'Quatre photos, gouttière serrée, cadrage carré.', 1,
-    solid(P.noir), [
-      cell(M, (H - (size * 2 + G)) / 2, size, size, { radius: 4 }),
-      cell(M + size + G, (H - (size * 2 + G)) / 2, size, size, { radius: 4 }),
-      cell(M, (H - (size * 2 + G)) / 2 + size + G, size, size, { radius: 4 }),
-      cell(M + size + G, (H - (size * 2 + G)) / 2 + size + G, size, size, { radius: 4 }),
-    ]);
+    solid(P.noir), {
+      body: [
+        cell(M, top, size, size, { radius: 4 }),
+        cell(M + size + G, top, size, size, { radius: 4 }),
+        cell(M, top + size + G, size, size, { radius: 4 }),
+        cell(M + size + G, top + size + G, size, size, { radius: 4 }),
+      ],
+    });
 }
 
 // 7. Mosaïque asymétrique.
 add('collage-mosaique', 'Mosaïque asymétrique', 'collage',
   'Trois formats différents, équilibre asymétrique.', 1,
-  solid(P.vert), [
-    cell(M, M, 560, 560, { radius: 6 }),
-    cell(M + 560 + G, M, CW - 560 - G, 560, { radius: 6 }),
-    cell(M, M + 560 + G, CW, H - M * 2 - 560 - G, { radius: 6 }),
-    ...pill(M + 28, M + 28, 'LOCALIA', P.orange, P.blanc),
-  ]);
+  solid(P.vert), {
+    body: [
+      cell(M, M, 560, 560, { radius: 6 }),
+      cell(M + 560 + G, M, CW - 560 - G, 560, { radius: 6 }),
+      cell(M, M + 560 + G, CW, H - M * 2 - 560 - G, { radius: 6 }),
+      pill(M + 28, M + 28, 'LOCALIA', P.orange, P.blanc),
+    ],
+  });
 
-// 8. Polaroid légèrement incliné, avec vrai cadre.
+// 8. Polaroid incliné.
 add('collage-polaroid', 'Polaroid', 'collage',
   'Photo encadrée de blanc, légèrement inclinée, ombre portée.', 1,
-  gradient(P.vert, '#08201a', 90), [
-    rotateGroup([
-      rect(140, 230, 800, 960, P.blanc, {
-        shadow: { color: '#000000', blur: 70, offsetX: 0, offsetY: 30, opacity: 0.5 },
-      }),
-      cell(188, 278, 704, 760),
-      text(188, 1070, 704, 'Été 2026', {
-        size: T.lg, weight: 600, color: P.noir, align: 'center',
-      }),
-    ], W / 2, H / 2, -3.5),
-  ]);
+  gradient(P.vert, '#08201a', 90), {
+    body: [
+      rotateGroup([
+        rect(140, 230, 800, 960, P.blanc, {
+          shadow: { color: '#000000', blur: 70, offsetX: 0, offsetY: 30, opacity: 0.5 },
+        }),
+        cell(188, 278, 704, 760),
+        text(188, 1070, 704, 'Été 2026', { size: T.lg, weight: 600, color: P.noir, align: 'center' }),
+      ], W / 2, H / 2, -3.5),
+    ],
+  });
 
-// 9. Avant / après vertical, séparation franche.
+// 9. Avant / après vertical.
 add('collage-avant-apres', 'Avant / après', 'collage',
   'Deux photos côte à côte, séparation franche et étiquettes.', 1,
-  solid(P.noir), [
-    cell(0, 0, W / 2 - 5, H),
-    cell(W / 2 + 5, 0, W / 2 - 5, H),
-    scrim(0, H - 420, W, 420),
-    ...pill(M, H - M - T.xs * 2.1, 'AVANT', P.orange, P.blanc),
-    ...pill(W / 2 + 36, H - M - T.xs * 2.1, 'APRÈS', P.menthe, P.vert),
-  ]);
+  solid(P.noir), {
+    body: [
+      cell(0, 0, W / 2 - 5, H),
+      cell(W / 2 + 5, 0, W / 2 - 5, H),
+      scrim(0, H - 420, W, 420),
+      pill(M, H - M - T.xs * 2.1, 'AVANT', P.orange, P.blanc),
+      pill(W / 2 + 36, H - M - T.xs * 2.1, 'APRÈS', P.menthe, P.vert),
+    ],
+  });
 
-// 10. Portrait en médaillon.
+// 10. Médaillon.
 add('collage-medaillon', 'Médaillon', 'collage',
   'Un portrait en cercle sur aplat, pour une présentation.', 1,
-  solid(P.vert), [
-    circle(W / 2, 470, 330, P.menthe, { opacity: 0.18 }),
-    ellipseCell(W / 2 - 300, 170, 600, 600, {
-      stroke: P.menthe,
-      strokeWidth: 8,
-    }),
-    text(M, 860, CW, 'THIBAUT', { size: T.xxl, color: P.blanc, align: 'center' }),
-    text(M, 990, CW, 'Fondateur · Localia', {
-      size: T.sm, weight: 600, color: P.menthe, align: 'center', caps: true,
-    }),
-    line(W / 2 - 60, 1090, [0, 0, 120, 0], P.orange, 8),
-  ]);
+  solid(P.vert), {
+    body: [
+      circle(W / 2, 470, 330, P.menthe, { opacity: 0.18 }),
+      ellipseCell(W / 2 - 300, 170, 600, 600, { stroke: P.menthe, strokeWidth: 8 }),
+      text(M, 860, CW, 'THIBAUT', { size: T.xxl, color: P.blanc, align: 'center' }),
+      text(M, 990, CW, 'Fondateur · Localia', { size: T.sm, weight: 600, color: P.menthe, align: 'center', caps: true }),
+      line(W / 2 - 60, 1090, [0, 0, 120, 0], P.orange, 8),
+    ],
+  });
 
-/* ================================ CARROUSELS ================================ */
+/* ================================ CARROUSELS ================================
+ * `full` : x et w en fraction de la largeur totale (0 → 1).
+ * ========================================================================== */
 
-// 11. Panorama plein cadre sur 3 slides.
-add('carrousel-panorama', 'Panorama 3 slides', 'carousel',
-  'Une photo panoramique plein cadre, titre sur la première slide.', 3,
-  solid(P.noir), [
-    cell(0, 0, W * 3, H),
-    scrim(0, H * 0.5, W, H * 0.5),
-    text(M, H - M - 190, CW, 'FAITES\nGLISSER', { size: T.xl, color: P.blanc }),
-    line(M, H - M - 60, [0, 0, 90, 0], P.orange, 8),
-  ]);
+// 11. Panorama : une seule photo, étirée sur toutes les slides.
+add('carrousel-panorama', 'Panorama plein cadre', 'carousel',
+  'Une seule photo panoramique qui traverse tout le carrousel.', 3,
+  solid(P.noir), {
+    full: [cell(0, 0, 1, H)],
+    lead: [
+      scrim(0, H * 0.5, W, H * 0.5),
+      text(M, H - M - 190, CW, 'FAITES\nGLISSER', { size: T.xl, color: P.blanc }),
+      line(M, H - M - 60, [0, 0, 90, 0], P.orange, 8),
+    ],
+  });
 
-// 12. Découpe oblique continue sur 3 slides.
+// 12. Découpe oblique continue : deux photos, sur toute la longueur.
 {
   const split = diagonalPair(0.10, 0.55, 14);
   add('carrousel-diagonale', 'Diagonale continue', 'carousel',
-    'Une découpe oblique qui traverse les trois slides sans rupture.', 3,
-    solid(P.vert), [
-      polyCell(0, 0, W * 3, H, split.haut),
-      polyCell(0, 0, W * 3, H, split.bas),
-      ...pill(M, M, 'LOCALIA', P.orange, P.blanc),
-    ]);
+    'Deux photos séparées par une découpe oblique qui traverse tout le carrousel.', 3,
+    solid(P.vert), {
+      full: [
+        polyCell(0, 0, 1, H, split.haut),
+        polyCell(0, 0, 1, H, split.bas),
+      ],
+      lead: [pill(M, M, 'LOCALIA', P.orange, P.blanc)],
+    });
 }
 
-// 13. Photo géante sur deux slides, puis bloc de texte.
-add('carrousel-photo-geante', 'Photo géante + texte', 'carousel',
-  'Une photo à cheval sur deux slides, la troisième porte le message.', 3,
-  solid(P.vert), [
-    cell(0, 0, W * 2 - 6, H),
-    rect(W * 2 + 6, 0, W - 6, H, P.menthe),
-    text(W * 2 + M, 300, CW, 'LE MOT\nDE LA FIN', { size: T.xxl, color: P.vert }),
-    text(W * 2 + M, 620, CW - 60, 'Une phrase courte qui conclut le carrousel et invite à réagir.', {
-      size: T.md, weight: 400, color: P.vert, lineHeight: 1.45,
-    }),
-    ...pill(W * 2 + M, 900, 'ON EN PARLE ?', P.vert, P.menthe),
-  ]);
+// 13. Une photo par slide, bord à bord.
+add('carrousel-galerie', 'Galerie plein cadre', 'carousel',
+  'Une photo plein cadre par slide, numérotée.', 5,
+  solid(P.noir), {
+    body: [
+      cell(0, 0, W, H),
+      scrim(0, H - 300, W, 300),
+      text(M, H - M - 48, CW, 'Localia', { size: T.sm, weight: 600, color: P.blanc, caps: true }),
+    ],
+  });
 
-// 14. Fil conducteur qui traverse les slides.
+// 14. Fil conducteur : une photo par slide, alternée de part et d'autre.
 add('carrousel-fil', 'Fil conducteur', 'carousel',
-  'Une ligne traverse les trois slides et relie les photos en quinconce.', 3,
-  solid(P.vert), [
-    line(0, H / 2, [0, 0, W * 3, 0], P.menthe, 5),
-    cell(M, M, CW, H / 2 - M - 40, { radius: 6 }),
-    cell(W + M, H / 2 + 40, CW, H / 2 - M - 40, { radius: 6 }),
-    cell(W * 2 + M, M, CW, H / 2 - M - 40, { radius: 6 }),
-    circle(W / 2, H / 2, 16, P.orange),
-    circle(W * 1.5, H / 2, 16, P.orange),
-    circle(W * 2.5, H / 2, 16, P.orange),
-  ]);
+  'Une ligne traverse tout le carrousel, les photos alternent de part et d\'autre.', 4,
+  solid(P.vert), {
+    full: [line(0, H / 2, [0, 0, 1, 0], P.menthe, 5)],
+    body: [
+      cell(M, M, CW, H / 2 - M - 44, { radius: 6 }),
+      circle(W / 2, H / 2, 16, P.orange),
+      text(M, H / 2 + 44, CW, '{nn}', { size: T.lg, color: P.menthe }),
+    ],
+    bodyAlt: [
+      cell(M, H / 2 + 44, CW, H / 2 - M - 44, { radius: 6 }),
+      circle(W / 2, H / 2, 16, P.orange),
+      text(M, H / 2 - 44 - T.lg * 1.3, CW, '{nn}', { size: T.lg, color: P.menthe }),
+    ],
+  });
 
 // 15. Couverture éditoriale puis galerie.
 add('carrousel-couverture', 'Couverture + galerie', 'carousel',
-  'Une slide de couverture typographique, puis trois photos plein cadre.', 4,
-  solid(P.vert), [
-    text(M, 380, CW, 'NOTRE\nSÉLECTION', { size: T.hero, color: P.menthe }),
-    line(M, 760, [0, 0, 140, 0], P.orange, 10),
-    text(M, 820, CW, 'Swipez pour découvrir', { size: T.sm, weight: 600, color: P.blanc, caps: true }),
-    cell(W, 0, W, H),
-    cell(W * 2, 0, W, H),
-    cell(W * 3, 0, W, H),
-  ]);
+  'Une slide de couverture typographique, puis une photo par slide.', 4,
+  solid(P.vert), {
+    lead: [
+      text(M, 380, CW, 'NOTRE\nSÉLECTION', { size: T.hero, color: P.menthe }),
+      line(M, 760, [0, 0, 140, 0], P.orange, 10),
+      text(M, 820, CW, 'Swipez pour découvrir', { size: T.sm, weight: 600, color: P.blanc, caps: true }),
+    ],
+    body: [cell(0, 0, W, H)],
+  });
 
-// 16. Avant / après sur deux slides, la découpe sert de séparation.
+// 16. Avant / après : la première et la dernière slide portent les étiquettes.
 add('carrousel-avant-apres', 'Avant / après', 'carousel',
-  'Une slide avant, une slide après : la découpe fait la transition.', 2,
-  solid(P.noir), [
-    cell(0, 0, W, H),
-    cell(W, 0, W, H),
-    scrim(0, H - 380, W, 380),
-    scrim(W, H - 380, W, 380),
-    ...pill(M, H - M - T.xs * 2.1, 'AVANT', P.orange, P.blanc),
-    ...pill(W + M, H - M - T.xs * 2.1, 'APRÈS', P.menthe, P.vert),
-  ]);
+  'La première slide « avant », la dernière « après », les étapes au milieu.', 2,
+  solid(P.noir), {
+    lead: [
+      cell(0, 0, W, H),
+      scrim(0, H - 380, W, 380),
+      pill(M, H - M - T.xs * 2.1, 'AVANT', P.orange, P.blanc),
+    ],
+    body: [
+      cell(0, 0, W, H),
+      scrim(0, H - 380, W, 380),
+      pill(M, H - M - T.xs * 2.1, 'ÉTAPE {n}', P.blanc, P.noir),
+    ],
+    tail: [
+      cell(0, 0, W, H),
+      scrim(0, H - 380, W, 380),
+      pill(M, H - M - T.xs * 2.1, 'APRÈS', P.menthe, P.vert),
+    ],
+  });
 
-// 17. Cinq étapes numérotées.
-add('carrousel-etapes', 'Storytelling 5 étapes', 'carousel',
-  'Cinq étapes numérotées, une par slide, rythme identique.', 5,
-  solid(P.vert), [
-    [0, 1, 2, 3, 4].map((i) => [
-      cell(W * i + M, M, CW, 700, { radius: 6 }),
-      text(W * i + M, M + 748, CW, `0${i + 1}`, { size: T.xl, color: P.orange }),
-      text(W * i + M, M + 872, CW, `Étape ${i + 1}`, { size: T.lg, color: P.blanc }),
-      text(W * i + M, M + 968, CW - 40, 'Une phrase courte pour décrire cette étape.', {
+// 17. Étapes numérotées, une par slide.
+add('carrousel-etapes', 'Storytelling par étapes', 'carousel',
+  'Une étape par slide : photo, titre et phrase courte, même rythme partout.', 5,
+  solid(P.vert), {
+    body: [
+      cell(M, M, CW, 700, { radius: 6 }),
+      text(M, M + 748, CW, '{nn}', { size: T.xl, color: P.orange }),
+      text(M, M + 872, CW, 'Étape {n}', { size: T.lg, color: P.blanc }),
+      text(M, M + 968, CW - 40, 'Une phrase courte pour décrire cette étape.', {
         size: T.sm, weight: 400, color: P.menthe, lineHeight: 1.45,
       }),
-      line(W * i + M, H - M, [0, 0, CW * ((i + 1) / 5), 0], P.menthe, 5),
-    ]),
-  ]);
+    ],
+  });
 
-// 18. Mosaïque qui ne s'interrompt pas aux découpes.
-add('carrousel-mosaique', 'Mosaïque continue', 'carousel',
-  'Une mosaïque qui traverse les découpes sans s\'interrompre.', 3,
-  solid(P.noir), [
-    cell(M, M, W * 1.25, 660, { radius: 6 }),
-    cell(M + W * 1.25 + G, M, W * 3 - M * 2 - W * 1.25 - G, 660, { radius: 6 }),
-    cell(M, M + 660 + G, W * 0.85, H - M * 2 - 660 - G, { radius: 6 }),
-    cell(M + W * 0.85 + G, M + 660 + G, W * 3 - M * 2 - W * 0.85 - G, H - M * 2 - 660 - G, { radius: 6 }),
-  ]);
+// 18. Mosaïque continue : deux photos par slide, rythme inversé une fois sur deux.
+{
+  const topH = 660;
+  const botH = H - M * 2 - topH - G;
+  const wide = CW * 0.62;
+  const narrow = CW - wide - G;
+  add('carrousel-mosaique', 'Mosaïque continue', 'carousel',
+    'Deux photos par slide, en rythme alterné, qui traversent les découpes.', 3,
+    solid(P.noir), {
+      body: [
+        cell(M, M, wide, topH, { radius: 6 }),
+        cell(M + wide + G, M, narrow, topH, { radius: 6 }),
+        cell(M, M + topH + G, CW, botH, { radius: 6 }),
+      ],
+      bodyAlt: [
+        cell(M, M, CW, topH, { radius: 6 }),
+        cell(M, M + topH + G, narrow, botH, { radius: 6 }),
+        cell(M + narrow + G, M + topH + G, wide, botH, { radius: 6 }),
+      ],
+    });
+}
 
-// 19. Titre géant qui court sur tout le carrousel.
+// 19. Titre géant sur toute la longueur, photo panoramique au-dessus.
 add('carrousel-bande-texte', 'Bande de texte continue', 'carousel',
-  'Un titre géant qui court d\'une slide à l\'autre, au-dessus d\'une photo.', 3,
-  gradient(P.vert, '#08201a', 0), [
-    cell(M, M, W * 3 - M * 2, 640, { radius: 6 }),
-    text(M, M + 726, W * 3 - M * 2, 'UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL', {
-      size: 232, color: P.menthe, lineHeight: 0.98, letterSpacing: -10,
-    }),
-    line(M, H - M - 40, [0, 0, W * 3 - M * 2, 0], P.orange, 6),
-  ]);
+  'Un titre géant et une photo qui courent sur toute la longueur.', 3,
+  gradient(P.vert, '#08201a', 0), {
+    full: [
+      cell(0, M, 1, 640, { radius: 6 }),
+      text(0, M + 726, 1, 'UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL', {
+        size: 232, color: P.menthe, lineHeight: 0.98, letterSpacing: -10,
+      }),
+      line(0, H - M - 40, [0, 0, 1, 0], P.orange, 6),
+    ],
+  });
 
-// 20. Récapitulatif puis appel à l'action.
+// 20. Galerie puis appel à l'action.
 add('carrousel-cta', 'Galerie + appel à l\'action', 'carousel',
-  'Trois photos plein cadre, puis une slide d\'appel à l\'action.', 4,
-  solid(P.vert), [
-    cell(0, 0, W, H),
-    cell(W, 0, W, H),
-    cell(W * 2, 0, W, H),
-    rect(W * 3, 0, W, H, P.menthe),
-    text(W * 3 + M, 340, CW, 'ON EN\nPARLE ?', { size: T.hero, color: P.vert }),
-    line(W * 3 + M, 700, [0, 0, 140, 0], P.orange, 10),
-    text(W * 3 + M, 760, CW - 80, 'Écrivez-nous, on répond sous 24 h.', {
-      size: T.md, weight: 400, color: P.vert, lineHeight: 1.4,
-    }),
-    ...pill(W * 3 + M, 920, 'LOCALIA.FR', P.vert, P.menthe),
-  ]);
+  'Une photo par slide, puis une slide finale d\'appel à l\'action.', 4,
+  solid(P.vert), {
+    body: [cell(0, 0, W, H)],
+    tail: [
+      rect(0, 0, W, H, P.menthe),
+      text(M, 340, CW, 'ON EN\nPARLE ?', { size: T.hero, color: P.vert }),
+      line(M, 700, [0, 0, 140, 0], P.orange, 10),
+      text(M, 760, CW - 80, 'Écrivez-nous, on répond sous 24 h.', { size: T.md, weight: 400, color: P.vert, lineHeight: 1.4 }),
+      pill(M, 920, 'LOCALIA.FR', P.vert, P.menthe),
+    ],
+  });
 
 /* ================================== Écriture ================================ */
 

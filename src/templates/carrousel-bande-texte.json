@@ -2,67 +2,64 @@
   "id": "carrousel-bande-texte",
   "name": "Bande de texte continue",
   "category": "carousel",
-  "description": "Un titre géant qui court d'une slide à l'autre, au-dessus d'une photo.",
-  "slideCount": 3,
+  "description": "Un titre géant et une photo qui courent sur toute la longueur.",
+  "defaultSlides": 3,
   "formats": [
     "carousel_portrait",
     "carousel_square"
   ],
-  "scene": {
-    "width": 3240,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "gradient",
-      "from": "#0f3d2e",
-      "to": "#08201a",
-      "angle": 0
-    },
-    "elements": [
-      {
-        "id": "c1",
-        "type": "photoCell",
-        "x": 72,
-        "y": 72,
-        "w": 3096,
-        "h": 640,
-        "radius": 6,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        }
-      },
-      {
-        "id": "t2",
-        "type": "text",
-        "x": 72,
-        "y": 798,
-        "w": 3096,
-        "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 232,
-        "color": "#7ed6ad",
-        "align": "left",
-        "lineHeight": 0.98,
-        "letterSpacing": -10
-      },
-      {
-        "id": "s3",
-        "type": "shape",
-        "shape": "line",
-        "x": 72,
-        "y": 1238,
-        "points": [
-          0,
-          0,
-          3096,
-          0
-        ],
-        "stroke": "#ef8a3f",
-        "strokeWidth": 6
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "gradient",
+    "from": "#0f3d2e",
+    "to": "#08201a",
+    "angle": 0
+  },
+  "full": [
+    {
+      "id": "c1",
+      "type": "photoCell",
+      "x": 0,
+      "y": 72,
+      "w": 1,
+      "h": 640,
+      "radius": 6,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       }
-    ]
-  }
+    },
+    {
+      "id": "t2",
+      "type": "text",
+      "x": 0,
+      "y": 798,
+      "w": 1,
+      "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
+      "font": "Poppins",
+      "weight": 800,
+      "size": 232,
+      "color": "#7ed6ad",
+      "align": "left",
+      "lineHeight": 0.98,
+      "letterSpacing": -10
+    },
+    {
+      "id": "s3",
+      "type": "shape",
+      "shape": "line",
+      "x": 0,
+      "y": 1238,
+      "points": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "stroke": "#ef8a3f",
+      "strokeWidth": 6
+    }
+  ]
 }

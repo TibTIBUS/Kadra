@@ -3,82 +3,79 @@
   "name": "Bandeau éditorial",
   "category": "collage",
   "description": "Un bloc de couleur et une photo qui le chevauche, pour la profondeur.",
-  "slideCount": 1,
+  "defaultSlides": 1,
   "formats": [
     "collage_portrait",
     "collage_square"
   ],
-  "scene": {
-    "width": 1080,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "body": [
+    {
+      "id": "s1",
+      "type": "shape",
+      "shape": "rect",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 620,
+      "fill": "#7ed6ad",
+      "radius": 0
     },
-    "elements": [
-      {
-        "id": "s1",
-        "type": "shape",
-        "shape": "rect",
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 620,
-        "fill": "#7ed6ad",
-        "radius": 0
+    {
+      "id": "t2",
+      "type": "text",
+      "x": 72,
+      "y": 120,
+      "w": 816,
+      "text": "NOS\nRÉALISATIONS",
+      "font": "Poppins",
+      "weight": 800,
+      "size": 96,
+      "color": "#0f3d2e",
+      "align": "left",
+      "lineHeight": 1.02,
+      "letterSpacing": -3.3600000000000003
+    },
+    {
+      "id": "c3",
+      "type": "photoCell",
+      "x": 72,
+      "y": 470,
+      "w": 936,
+      "h": 700,
+      "radius": 8,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       },
-      {
-        "id": "t2",
-        "type": "text",
-        "x": 72,
-        "y": 120,
-        "w": 816,
-        "text": "NOS\nRÉALISATIONS",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 96,
-        "color": "#0f3d2e",
-        "align": "left",
-        "lineHeight": 1.02,
-        "letterSpacing": -3.3600000000000003
-      },
-      {
-        "id": "c3",
-        "type": "photoCell",
-        "x": 72,
-        "y": 470,
-        "w": 936,
-        "h": 700,
-        "radius": 8,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "shadow": {
-          "color": "#000000",
-          "blur": 60,
-          "offsetX": 0,
-          "offsetY": 24,
-          "opacity": 0.45
-        }
-      },
-      {
-        "id": "t4",
-        "type": "text",
-        "x": 72,
-        "y": 1242,
-        "w": 936,
-        "text": "localia.fr",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 38,
-        "color": "#7ed6ad",
-        "align": "left",
-        "lineHeight": 1.28,
-        "letterSpacing": 4.56
+      "shadow": {
+        "color": "#000000",
+        "blur": 60,
+        "offsetX": 0,
+        "offsetY": 24,
+        "opacity": 0.45
       }
-    ]
-  }
+    },
+    {
+      "id": "t4",
+      "type": "text",
+      "x": 72,
+      "y": 1242,
+      "w": 936,
+      "text": "localia.fr",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 38,
+      "color": "#7ed6ad",
+      "align": "left",
+      "lineHeight": 1.28,
+      "letterSpacing": 4.56
+    }
+  ]
 }

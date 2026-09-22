@@ -11,7 +11,9 @@ export async function renderTemplateThumbnail(id: string, scene: Scene): Promise
   const cached = cache.get(id);
   if (cached) return cached;
 
-  const source = await renderSceneCanvas(scene, new Map());
+  // Une miniature n'a pas besoin de la pleine résolution : un carrousel de dix
+  // slides ferait sinon 10 800 px de large, pour un affichage de 360 px.
+  const source = await renderSceneCanvas(scene, new Map(), 0.25);
   const canvas = document.createElement('canvas');
   const width = 360;
   canvas.width = width;

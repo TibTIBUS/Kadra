@@ -3,100 +3,97 @@
   "name": "Split diagonal",
   "category": "collage",
   "description": "Deux photos séparées par une vraie découpe oblique, sans recouvrement.",
-  "slideCount": 1,
+  "defaultSlides": 1,
   "formats": [
     "collage_portrait",
     "collage_square"
   ],
-  "scene": {
-    "width": 1080,
-    "height": 1350,
-    "slideWidth": 1080,
-    "background": {
-      "type": "solid",
-      "color": "#0f3d2e"
-    },
-    "elements": [
-      {
-        "id": "c1",
-        "type": "photoCell",
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "mask": {
-          "type": "polygon",
-          "points": [
-            0,
-            0,
-            1,
-            0,
-            1,
-            0.5855555555555556,
-            0,
-            0.4455555555555556
-          ]
-        }
+  "refHeight": 1350,
+  "refSlideWidth": 1080,
+  "background": {
+    "type": "solid",
+    "color": "#0f3d2e"
+  },
+  "body": [
+    {
+      "id": "c1",
+      "type": "photoCell",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1350,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
       },
-      {
-        "id": "c2",
-        "type": "photoCell",
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 1350,
-        "radius": 0,
-        "crop": {
-          "offsetX": 0,
-          "offsetY": 0,
-          "scale": 1
-        },
-        "mask": {
-          "type": "polygon",
-          "points": [
-            0,
-            0.45444444444444443,
-            1,
-            0.5944444444444446,
-            1,
-            1,
-            0,
-            1
-          ]
-        }
-      },
-      {
-        "id": "s3",
-        "type": "shape",
-        "shape": "rect",
-        "x": 72,
-        "y": 1215,
-        "w": 340.8,
-        "h": 63,
-        "fill": "#ef8a3f",
-        "radius": 31.5
-      },
-      {
-        "id": "t4",
-        "type": "text",
-        "x": 72,
-        "y": 1224.9,
-        "w": 340.8,
-        "text": "AVANT / APRÈS",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 30,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.28,
-        "letterSpacing": 3.5999999999999996
+      "mask": {
+        "type": "polygon",
+        "points": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0.5855555555555556,
+          0,
+          0.4455555555555556
+        ]
       }
-    ]
-  }
+    },
+    {
+      "id": "c2",
+      "type": "photoCell",
+      "x": 0,
+      "y": 0,
+      "w": 1080,
+      "h": 1350,
+      "radius": 0,
+      "crop": {
+        "offsetX": 0,
+        "offsetY": 0,
+        "scale": 1
+      },
+      "mask": {
+        "type": "polygon",
+        "points": [
+          0,
+          0.45444444444444443,
+          1,
+          0.5944444444444446,
+          1,
+          1,
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "id": "s3",
+      "type": "shape",
+      "shape": "rect",
+      "x": 72,
+      "y": 1215,
+      "w": 340.8,
+      "h": 63,
+      "fill": "#ef8a3f",
+      "radius": 31.5
+    },
+    {
+      "id": "t4",
+      "type": "text",
+      "x": 72,
+      "y": 1224.9,
+      "w": 340.8,
+      "text": "AVANT / APRÈS",
+      "font": "Poppins",
+      "weight": 600,
+      "size": 30,
+      "color": "#ffffff",
+      "align": "center",
+      "lineHeight": 1.28,
+      "letterSpacing": 3.5999999999999996
+    }
+  ]
 }

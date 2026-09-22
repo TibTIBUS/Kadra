@@ -154,12 +154,33 @@ Google Fonts : le rendu des JPEG exportés ne dépend plus d'une requête résea
 échouer ou arriver après le rendu, et aucune donnée de visite ne part chez un tiers. Police
 sous SIL Open Font License 1.1.
 
-### Ajouter un template
+### Templates : des motifs, pas des scènes figées
 
-Déposer un fichier JSON dans `src/templates/` (repris automatiquement par `import.meta.glob`).
-Les scènes de référence sont définies en 1080 × 1350 par slide et mises à l'échelle
-automatiquement pour les formats carrés. `scripts/generate-templates.mjs` régénère les 20
-templates livrés.
+Un template ne décrit pas une composition figée mais un **motif**, réassemblé pour le nombre de
+slides demandé. Sans cela, un carrousel conçu pour 3 slides et créé en 10 gardait sa photo
+panoramique large de 3 slides et recevait 7 cellules génériques : une seule photo plaçable, et
+une composition incohérente.
+
+Quatre emplacements, tous optionnels :
+
+| Clé | Rôle | Coordonnées |
+|---|---|---|
+| `full` | éléments traversant tout le carrousel (photo panoramique, fil conducteur) | `x` et `w` en **fraction** de la largeur totale |
+| `lead` | première slide : couverture, titre | locales à une slide |
+| `body` | motif répété sur les slides courantes | locales à une slide |
+| `bodyAlt` | variante appliquée une slide sur deux, pour créer un rythme | locales à une slide |
+| `tail` | dernière slide : récapitulatif, appel à l'action | locales à une slide |
+
+Dans un texte, `{n}` devient le numéro de slide et `{nn}` le même sur deux chiffres : un motif
+répété peut donc se numéroter tout seul.
+
+L'éditeur suit la même logique : ajouter ou retirer une slide **étire ou rétracte** les
+éléments qui traversaient déjà toute la scène, au lieu d'empiler des cellules génériques à
+côté d'une photo panoramique restée courte.
+
+Déposer un fichier JSON dans `src/templates/` suffit à ajouter un template (repris par
+`import.meta.glob`). Les coordonnées sont définies en 1080 × 1350 par slide et mises à
+l'échelle pour les formats carrés. `scripts/generate-templates.mjs` régénère les 20 livrés.
 
 ## Hors périmètre V1
 
