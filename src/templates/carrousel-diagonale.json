@@ -1,15 +1,15 @@
 {
-  "id": "collage-split-diagonal",
-  "name": "Split diagonal",
-  "category": "collage",
-  "description": "Deux photos séparées par une vraie découpe oblique, sans recouvrement.",
-  "slideCount": 1,
+  "id": "carrousel-diagonale",
+  "name": "Diagonale continue",
+  "category": "carousel",
+  "description": "Une découpe oblique qui traverse les trois slides sans rupture.",
+  "slideCount": 3,
   "formats": [
-    "collage_portrait",
-    "collage_square"
+    "carousel_portrait",
+    "carousel_square"
   ],
   "scene": {
-    "width": 1080,
+    "width": 3240,
     "height": 1350,
     "slideWidth": 1080,
     "background": {
@@ -22,7 +22,7 @@
         "type": "photoCell",
         "x": 0,
         "y": 0,
-        "w": 1080,
+        "w": 3240,
         "h": 1350,
         "radius": 0,
         "crop": {
@@ -38,9 +38,9 @@
             1,
             0,
             1,
-            0.5855555555555556,
+            0.5948148148148149,
             0,
-            0.4455555555555556
+            0.4948148148148148
           ]
         }
       },
@@ -49,7 +49,7 @@
         "type": "photoCell",
         "x": 0,
         "y": 0,
-        "w": 1080,
+        "w": 3240,
         "h": 1350,
         "radius": 0,
         "crop": {
@@ -61,9 +61,9 @@
           "type": "polygon",
           "points": [
             0,
-            0.45444444444444443,
+            0.5051851851851852,
             1,
-            0.5944444444444446,
+            0.6051851851851853,
             1,
             1,
             0,
@@ -76,8 +76,8 @@
         "type": "shape",
         "shape": "rect",
         "x": 72,
-        "y": 1215,
-        "w": 340.8,
+        "y": 72,
+        "w": 211.2,
         "h": 63,
         "fill": "#ef8a3f",
         "radius": 31.5
@@ -86,9 +86,9 @@
         "id": "t4",
         "type": "text",
         "x": 72,
-        "y": 1224.9,
-        "w": 340.8,
-        "text": "AVANT / APRÈS",
+        "y": 81.9,
+        "w": 211.2,
+        "text": "LOCALIA",
         "font": "Poppins",
         "weight": 600,
         "size": 30,

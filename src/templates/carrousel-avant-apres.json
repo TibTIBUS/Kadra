@@ -1,8 +1,8 @@
 {
   "id": "carrousel-avant-apres",
-  "name": "Avant / après sur 2 slides",
+  "name": "Avant / après",
   "category": "carousel",
-  "description": "Une slide avant, une slide après, séparées par la découpe.",
+  "description": "Une slide avant, une slide après : la découpe fait la transition.",
   "slideCount": 2,
   "formats": [
     "carousel_portrait",
@@ -49,51 +49,83 @@
         "id": "s3",
         "type": "shape",
         "shape": "rect",
-        "x": 60,
-        "y": 60,
-        "w": 280,
-        "h": 80,
-        "fill": "#ef8a3f",
-        "radius": 40
+        "x": 0,
+        "y": 970,
+        "w": 1080,
+        "h": 380,
+        "radius": 0,
+        "gradient": {
+          "from": "rgba(0,0,0,0)",
+          "to": "rgba(11,26,21,0.92)",
+          "angle": 90
+        }
       },
       {
-        "id": "t4",
-        "type": "text",
-        "x": 60,
-        "y": 78,
-        "w": 280,
-        "text": "AVANT",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 44,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.15
+        "id": "s4",
+        "type": "shape",
+        "shape": "rect",
+        "x": 1080,
+        "y": 970,
+        "w": 1080,
+        "h": 380,
+        "radius": 0,
+        "gradient": {
+          "from": "rgba(0,0,0,0)",
+          "to": "rgba(11,26,21,0.92)",
+          "angle": 90
+        }
       },
       {
         "id": "s5",
         "type": "shape",
         "shape": "rect",
-        "x": 1140,
-        "y": 60,
-        "w": 280,
-        "h": 80,
-        "fill": "#7ed6ad",
-        "radius": 40
+        "x": 72,
+        "y": 1215,
+        "w": 168,
+        "h": 63,
+        "fill": "#ef8a3f",
+        "radius": 31.5
       },
       {
         "id": "t6",
         "type": "text",
-        "x": 1140,
-        "y": 78,
-        "w": 280,
+        "x": 72,
+        "y": 1224.9,
+        "w": 168,
+        "text": "AVANT",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 30,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.28,
+        "letterSpacing": 3.5999999999999996
+      },
+      {
+        "id": "s7",
+        "type": "shape",
+        "shape": "rect",
+        "x": 1152,
+        "y": 1215,
+        "w": 168,
+        "h": 63,
+        "fill": "#7ed6ad",
+        "radius": 31.5
+      },
+      {
+        "id": "t8",
+        "type": "text",
+        "x": 1152,
+        "y": 1224.9,
+        "w": 168,
         "text": "APRÈS",
         "font": "Poppins",
-        "weight": 800,
-        "size": 44,
+        "weight": 600,
+        "size": 30,
         "color": "#0f3d2e",
         "align": "center",
-        "lineHeight": 1.15
+        "lineHeight": 1.28,
+        "letterSpacing": 3.5999999999999996
       }
     ]
   }

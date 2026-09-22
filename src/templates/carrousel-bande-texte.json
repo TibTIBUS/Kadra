@@ -2,7 +2,7 @@
   "id": "carrousel-bande-texte",
   "name": "Bande de texte continue",
   "category": "carousel",
-  "description": "Un titre qui court sur toute la largeur du carrousel.",
+  "description": "Un titre géant qui court d'une slide à l'autre, au-dessus d'une photo.",
   "slideCount": 3,
   "formats": [
     "carousel_portrait",
@@ -15,18 +15,18 @@
     "background": {
       "type": "gradient",
       "from": "#0f3d2e",
-      "to": "#111111",
+      "to": "#08201a",
       "angle": 0
     },
     "elements": [
       {
         "id": "c1",
         "type": "photoCell",
-        "x": 60,
-        "y": 60,
-        "w": 3120,
-        "h": 760,
-        "radius": 24,
+        "x": 72,
+        "y": 72,
+        "w": 3096,
+        "h": 640,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -36,27 +36,32 @@
       {
         "id": "t2",
         "type": "text",
-        "x": 60,
-        "y": 880,
-        "w": 3120,
+        "x": 72,
+        "y": 798,
+        "w": 3096,
         "text": "UNE IDÉE QUI TRAVERSE TOUT LE CARROUSEL",
         "font": "Poppins",
         "weight": 800,
-        "size": 120,
+        "size": 232,
         "color": "#7ed6ad",
         "align": "left",
-        "lineHeight": 1.05
+        "lineHeight": 0.98,
+        "letterSpacing": -10
       },
       {
         "id": "s3",
         "type": "shape",
-        "shape": "rect",
-        "x": 60,
-        "y": 1150,
-        "w": 3120,
-        "h": 6,
-        "fill": "#ef8a3f",
-        "radius": 0
+        "shape": "line",
+        "x": 72,
+        "y": 1238,
+        "points": [
+          0,
+          0,
+          3096,
+          0
+        ],
+        "stroke": "#ef8a3f",
+        "strokeWidth": 6
       }
     ]
   }

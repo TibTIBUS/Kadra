@@ -1,8 +1,8 @@
 {
-  "id": "collage-grille-2",
-  "name": "Grille 2 photos",
+  "id": "collage-duo",
+  "name": "Duo vertical",
   "category": "collage",
-  "description": "Deux photos empilées, bandeau de titre entre les deux.",
+  "description": "Deux photos superposées, gouttière fine et légende.",
   "slideCount": 1,
   "formats": [
     "collage_portrait",
@@ -20,11 +20,11 @@
       {
         "id": "c1",
         "type": "photoCell",
-        "x": 60,
-        "y": 60,
-        "w": 960,
-        "h": 580,
-        "radius": 24,
+        "x": 72,
+        "y": 72,
+        "w": 936,
+        "h": 560,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -34,11 +34,11 @@
       {
         "id": "c2",
         "type": "photoCell",
-        "x": 60,
-        "y": 760,
-        "w": 960,
-        "h": 530,
-        "radius": 24,
+        "x": 72,
+        "y": 650,
+        "w": 936,
+        "h": 560,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -48,16 +48,17 @@
       {
         "id": "t3",
         "type": "text",
-        "x": 60,
-        "y": 676,
-        "w": 960,
-        "text": "VOTRE TITRE",
+        "x": 72,
+        "y": 1250,
+        "w": 936,
+        "text": "Deux moments, une histoire",
         "font": "Poppins",
         "weight": 800,
-        "size": 64,
+        "size": 60,
         "color": "#7ed6ad",
         "align": "left",
-        "lineHeight": 1.15
+        "lineHeight": 1.28,
+        "letterSpacing": -1.3199999999999998
       }
     ]
   }

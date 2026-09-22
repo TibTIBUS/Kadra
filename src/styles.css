@@ -1,3 +1,33 @@
+/*
+ * Poppins est embarquée plutôt que chargée depuis Google Fonts : le rendu des
+ * JPEG exportés ne dépend plus d'une requête réseau qui pourrait échouer ou
+ * arriver trop tard, et aucune donnée de visite n'est envoyée à un tiers.
+ * Police sous SIL Open Font License 1.1 (voir public/fonts/LICENSE.txt).
+ */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('/fonts/poppins-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('/fonts/poppins-600.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 800;
+  font-display: block;
+  src: url('/fonts/poppins-800.woff2') format('woff2');
+}
+
 :root {
   --vert: #0f3d2e;
   --menthe: #7ed6ad;

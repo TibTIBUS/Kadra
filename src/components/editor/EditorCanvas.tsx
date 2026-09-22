@@ -1,11 +1,23 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Konva from 'konva';
-import { Circle, Group, Image as KonvaImage, Layer, Line, Rect, Stage, Text, Transformer } from 'react-konva';
+import {
+  Circle,
+  Group,
+  Image as KonvaImage,
+  Layer,
+  Line,
+  Rect,
+  Shape,
+  Stage,
+  Text,
+  Transformer,
+} from 'react-konva';
 import { useEditorStore } from '../../store/editorStore';
 import { useImages } from './useImages';
 import { computePlacement, clampOffsets, clampZoom } from '../../lib/photo';
 import { slideCountOf } from '../../lib/scene';
 import { profileGridCrop } from '../../lib/preview';
+import { shadowProps, traceCellPath, type PathSink } from '../../lib/mask';
 import { palette, SAFE_MARGIN } from '../../theme';
 import type { PhotoCellElement, Scene, SceneElement } from '../../types/scene';
 
@@ -217,11 +229,14 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
               const isCropping = cropMode && selectedId === element.id && Boolean(image);
 
               return (
+                <Fragment key={element.id}>
                 <Group
-                  key={element.id}
                   ref={(node) => registerNode(element.id, node)}
-                  x={element.x}
-                  y={element.y}
+                  x={element.x + element.w / 2}
+                  y={element.y + element.h / 2}
+                  offsetX={element.w / 2}
+                  offsetY={element.h / 2}
+                  rotation={element.rotation ?? 0}
                   draggable={!isCropping}
                   onClick={() => {
                     if (!placePendingAsset(element.id)) select(element.id);
@@ -230,29 +245,26 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                     if (!placePendingAsset(element.id)) select(element.id);
                   }}
                   onDragEnd={(event) =>
-                    updateElement(element.id, { x: event.target.x(), y: event.target.y() })
+                    updateElement(element.id, {
+                      x: event.target.x() - element.w / 2,
+                      y: event.target.y() - element.h / 2,
+                    })
                   }
                   onTransformEnd={(event) => {
                     const node = event.target;
+                    const w = Math.max(40, element.w * node.scaleX());
+                    const h = Math.max(40, element.h * node.scaleY());
                     updateElement(element.id, {
-                      x: node.x(),
-                      y: node.y(),
-                      w: Math.max(40, element.w * node.scaleX()),
-                      h: Math.max(40, element.h * node.scaleY()),
+                      x: node.x() - w / 2,
+                      y: node.y() - h / 2,
+                      w,
+                      h,
+                      rotation: node.rotation(),
                     });
                     node.scaleX(1);
                     node.scaleY(1);
                   }}
-                  clipFunc={(ctx) => {
-                    const radius = Math.min(element.radius ?? 0, element.w / 2, element.h / 2);
-                    ctx.beginPath();
-                    ctx.moveTo(radius, 0);
-                    ctx.arcTo(element.w, 0, element.w, element.h, radius);
-                    ctx.arcTo(element.w, element.h, 0, element.h, radius);
-                    ctx.arcTo(0, element.h, 0, 0, radius);
-                    ctx.arcTo(0, 0, element.w, 0, radius);
-                    ctx.closePath();
-                  }}
+                  clipFunc={(ctx) => traceCellPath(ctx as unknown as PathSink, element)}
                 >
                   {image ? (
                     <KonvaImage
@@ -301,6 +313,24 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                     </>
                   )}
                 </Group>
+
+                {element.stroke && element.strokeWidth ? (
+                  <Shape
+                    x={element.x + element.w / 2}
+                    y={element.y + element.h / 2}
+                    offsetX={element.w / 2}
+                    offsetY={element.h / 2}
+                    rotation={element.rotation ?? 0}
+                    stroke={element.stroke}
+                    strokeWidth={element.strokeWidth}
+                    listening={false}
+                    sceneFunc={(ctx, shape) => {
+                      traceCellPath(ctx as unknown as PathSink, element);
+                      ctx.strokeShape(shape);
+                    }}
+                  />
+                ) : null}
+                </Fragment>
               );
             }
 
@@ -312,6 +342,7 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   x={element.x}
                   y={element.y}
                   width={element.w}
+                  rotation={element.rotation ?? 0}
                   text={element.text}
                   fontFamily={element.font}
                   fontSize={element.size}
@@ -321,6 +352,7 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   lineHeight={element.lineHeight ?? 1.2}
                   letterSpacing={element.letterSpacing ?? 0}
                   wrap="word"
+                  {...shadowProps(element.shadow)}
                   draggable
                   onClick={() => {
                     if (!placePendingAsset(element.id)) select(element.id);
@@ -363,6 +395,7 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
                   radius={element.r ?? 40}
                   fill={element.fill}
                   opacity={element.opacity ?? 1}
+                  {...shadowProps(element.shadow)}
                   {...commonHandlers}
                   onTransformEnd={(event) => {
                     const node = event.target;
@@ -400,21 +433,44 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
               <Rect
                 key={element.id}
                 ref={(node) => registerNode(element.id, node)}
-                x={element.x}
-                y={element.y}
+                x={element.x + (element.w ?? 100) / 2}
+                y={element.y + (element.h ?? 100) / 2}
+                offsetX={(element.w ?? 100) / 2}
+                offsetY={(element.h ?? 100) / 2}
                 width={element.w ?? 100}
                 height={element.h ?? 100}
                 cornerRadius={element.radius ?? 0}
+                rotation={element.rotation ?? 0}
                 fill={element.fill}
                 opacity={element.opacity ?? 1}
+                {...(element.gradient
+                  ? {
+                      fillLinearGradientStartPoint: { x: 0, y: 0 },
+                      fillLinearGradientEndPoint: {
+                        x: Math.cos((element.gradient.angle * Math.PI) / 180) * (element.w ?? 100),
+                        y: Math.sin((element.gradient.angle * Math.PI) / 180) * (element.h ?? 100),
+                      },
+                      fillLinearGradientColorStops: [0, element.gradient.from, 1, element.gradient.to],
+                    }
+                  : {})}
+                {...shadowProps(element.shadow)}
                 {...commonHandlers}
+                onDragEnd={(event) =>
+                  updateElement(element.id, {
+                    x: event.target.x() - (element.w ?? 100) / 2,
+                    y: event.target.y() - (element.h ?? 100) / 2,
+                  })
+                }
                 onTransformEnd={(event) => {
                   const node = event.target;
+                  const w = Math.max(10, (element.w ?? 100) * node.scaleX());
+                  const h = Math.max(10, (element.h ?? 100) * node.scaleY());
                   updateElement(element.id, {
-                    x: node.x(),
-                    y: node.y(),
-                    w: Math.max(10, (element.w ?? 100) * node.scaleX()),
-                    h: Math.max(10, (element.h ?? 100) * node.scaleY()),
+                    x: node.x() - w / 2,
+                    y: node.y() - h / 2,
+                    w,
+                    h,
+                    rotation: node.rotation(),
                   });
                   node.scaleX(1);
                   node.scaleY(1);
@@ -468,7 +524,9 @@ export default function EditorCanvas({ cropMode, zoom, onDropAsset }: Props) {
         <Layer>
           <Transformer
             ref={transformerRef}
-            rotateEnabled={false}
+            rotateEnabled
+            rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
+            rotationSnapTolerance={4}
             borderStroke={palette.menthe}
             anchorStroke={palette.menthe}
             anchorFill={palette.blanc}

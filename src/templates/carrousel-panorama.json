@@ -1,15 +1,15 @@
 {
-  "id": "collage-plein-cadre",
-  "name": "Photo plein cadre",
-  "category": "collage",
-  "description": "Une photo pleine page, voile dégradé et titre en bas.",
-  "slideCount": 1,
+  "id": "carrousel-panorama",
+  "name": "Panorama 3 slides",
+  "category": "carousel",
+  "description": "Une photo panoramique plein cadre, titre sur la première slide.",
+  "slideCount": 3,
   "formats": [
-    "collage_portrait",
-    "collage_square"
+    "carousel_portrait",
+    "carousel_square"
   ],
   "scene": {
-    "width": 1080,
+    "width": 3240,
     "height": 1350,
     "slideWidth": 1080,
     "background": {
@@ -22,7 +22,7 @@
         "type": "photoCell",
         "x": 0,
         "y": 0,
-        "w": 1080,
+        "w": 3240,
         "h": 1350,
         "radius": 0,
         "crop": {
@@ -36,9 +36,9 @@
         "type": "shape",
         "shape": "rect",
         "x": 0,
-        "y": 567,
+        "y": 675,
         "w": 1080,
-        "h": 783,
+        "h": 675,
         "radius": 0,
         "gradient": {
           "from": "rgba(0,0,0,0)",
@@ -50,46 +50,31 @@
         "id": "t3",
         "type": "text",
         "x": 72,
-        "y": 879.12,
+        "y": 1088,
         "w": 936,
-        "text": "UN TITRE\nQUI PORTE",
+        "text": "FAITES\nGLISSER",
         "font": "Poppins",
         "weight": 800,
-        "size": 122,
+        "size": 76,
         "color": "#ffffff",
         "align": "left",
         "lineHeight": 1.02,
-        "letterSpacing": -4.2700000000000005
+        "letterSpacing": -1.672
       },
       {
         "id": "s4",
         "type": "shape",
         "shape": "line",
         "x": 72,
-        "y": 1186,
+        "y": 1218,
         "points": [
           0,
           0,
-          120,
+          90,
           0
         ],
         "stroke": "#ef8a3f",
         "strokeWidth": 8
-      },
-      {
-        "id": "t5",
-        "type": "text",
-        "x": 72,
-        "y": 1220,
-        "w": 936,
-        "text": "Localia · Normandie",
-        "font": "Poppins",
-        "weight": 600,
-        "size": 38,
-        "color": "#7ed6ad",
-        "align": "left",
-        "lineHeight": 1.28,
-        "letterSpacing": 4.56
       }
     ]
   }

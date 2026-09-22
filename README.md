@@ -60,9 +60,9 @@ La protection de l'URL se fait via le mot de passe de site Netlify (selon le pla
   N × 1080 px de large, découpée en N images à l'export.
 - **Photos** : glisser-déposer multi-fichiers, JPEG / PNG / WEBP / **HEIC** (converti en JPEG
   côté client), redimensionnement à 3000 px max, aperçu 1200 px pour l'éditeur.
-- **Éditeur Konva** : cellules photo avec recadrage (déplacement + zoom molette, la cellule
-  reste fixe), textes, formes, palette imposée, ajout/retrait de slides, undo/redo 50 niveaux
-  (Ctrl+Z / Ctrl+Maj+Z).
+- **Éditeur Konva** : cellules photo avec recadrage (déplacement + zoom molette ou pincement,
+  la cellule reste fixe), découpes sur mesure, inclinaison, cadres, textes, formes, palette
+  imposée, ajout/retrait de slides, undo/redo 50 niveaux (Ctrl+Z / Ctrl+Maj+Z).
 - **Repères d'édition** : lignes de découpe entre slides, zone de sécurité de 60 px, bande du
   recadrage 3:4 de la grille du profil, alerte si un texte chevauche une découpe. Ces repères
   sont dessinés dans une couche dédiée et **n'existent pas au rendu d'export**.
@@ -96,6 +96,31 @@ Netlify DB) se fait sans toucher à l'interface.
 Le rendu d'export est **indépendant de l'éditeur** : `lib/render.ts` construit une scène Konva
 hors écran à la résolution exacte, `lib/export.ts` la découpe par slide. Les repères d'édition
 ne peuvent donc jamais se retrouver dans une image exportée.
+
+### Composition : masques, pivots, voiles
+
+Une cellule photo n'est pas forcément un rectangle. `CellMask` accepte un rectangle
+(éventuellement arrondi), un ovale, ou un **polygone** dont les points sont normalisés de 0 à 1
+dans la boîte de la cellule. C'est ce qui permet une découpe oblique correcte : deux cellules
+qui déclarent la même arête se raccordent au pixel près, aucune photo ne peut déborder sur
+l'autre. Le tracé vit dans `lib/mask.ts` et sert **à la fois** à l'éditeur et au rendu
+d'export, ce qui garantit que l'aperçu et le JPEG sont identiques.
+
+Tout ce qui a une boîte — cellule photo comme rectangle décoratif — pivote autour de son
+centre. Deux éléments superposés restent donc alignés quand on les incline. Pour faire pivoter
+plusieurs éléments comme un seul bloc, `rotateGroup` (dans le script de génération) applique un
+pivot commun.
+
+Les textes posés sur une photo reçoivent un **voile dégradé** : c'est ce qui sépare un visuel
+lisible d'un titre noyé dans l'image. Les grands titres portent un interlettrage négatif, les
+petites capitales un interlettrage ouvert.
+
+### Typographie
+
+Poppins (graisses 400, 600, 800) est **embarquée** dans `public/fonts`, pas chargée depuis
+Google Fonts : le rendu des JPEG exportés ne dépend plus d'une requête réseau qui pourrait
+échouer ou arriver après le rendu, et aucune donnée de visite ne part chez un tiers. Police
+sous SIL Open Font License 1.1.
 
 ### Ajouter un template
 

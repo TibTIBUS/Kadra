@@ -1,0 +1,9 @@
+Poppins
+Copyright 2020 The Poppins Project Authors
+(https://github.com/itfoundry/Poppins)
+
+Distribuée sous la SIL Open Font License, Version 1.1.
+Texte complet : https://openfontlicense.org
+
+Sous-ensemble latin embarqué dans KADRA pour que le rendu et l'export des
+visuels ne dépendent d'aucune requête réseau vers un tiers.

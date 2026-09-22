@@ -1,8 +1,8 @@
 {
-  "id": "collage-grille-3",
-  "name": "Grille 3 photos",
+  "id": "collage-hero",
+  "name": "Héro + vignettes",
   "category": "collage",
-  "description": "Une photo large au-dessus, deux vignettes en dessous.",
+  "description": "Une grande photo et deux vignettes, hiérarchie nette.",
   "slideCount": 1,
   "formats": [
     "collage_portrait",
@@ -14,17 +14,17 @@
     "slideWidth": 1080,
     "background": {
       "type": "solid",
-      "color": "#0f3d2e"
+      "color": "#111111"
     },
     "elements": [
       {
         "id": "c1",
         "type": "photoCell",
-        "x": 60,
-        "y": 60,
-        "w": 960,
-        "h": 760,
-        "radius": 24,
+        "x": 72,
+        "y": 72,
+        "w": 936,
+        "h": 780,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -34,11 +34,11 @@
       {
         "id": "c2",
         "type": "photoCell",
-        "x": 60,
-        "y": 844,
-        "w": 468,
-        "h": 420,
-        "radius": 24,
+        "x": 72,
+        "y": 870,
+        "w": 459,
+        "h": 340,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -48,11 +48,11 @@
       {
         "id": "c3",
         "type": "photoCell",
-        "x": 552,
-        "y": 844,
-        "w": 468,
-        "h": 420,
-        "radius": 24,
+        "x": 549,
+        "y": 870,
+        "w": 459,
+        "h": 340,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -62,16 +62,17 @@
       {
         "id": "t4",
         "type": "text",
-        "x": 60,
-        "y": 1288,
-        "w": 960,
-        "text": "Localia · Normandie",
+        "x": 72,
+        "y": 1244,
+        "w": 936,
+        "text": "Reportage",
         "font": "Poppins",
         "weight": 600,
-        "size": 40,
-        "color": "#7ed6ad",
+        "size": 38,
+        "color": "#ef8a3f",
         "align": "left",
-        "lineHeight": 1.15
+        "lineHeight": 1.28,
+        "letterSpacing": 4.56
       }
     ]
   }

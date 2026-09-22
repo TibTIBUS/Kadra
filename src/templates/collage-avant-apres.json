@@ -1,8 +1,8 @@
 {
   "id": "collage-avant-apres",
-  "name": "Avant / Après",
+  "name": "Avant / après",
   "category": "collage",
-  "description": "Deux photos côte à côte avec étiquettes.",
+  "description": "Deux photos côte à côte, séparation franche et étiquettes.",
   "slideCount": 1,
   "formats": [
     "collage_portrait",
@@ -14,17 +14,17 @@
     "slideWidth": 1080,
     "background": {
       "type": "solid",
-      "color": "#0f3d2e"
+      "color": "#111111"
     },
     "elements": [
       {
         "id": "c1",
         "type": "photoCell",
-        "x": 60,
-        "y": 220,
-        "w": 468,
-        "h": 1070,
-        "radius": 24,
+        "x": 0,
+        "y": 0,
+        "w": 535,
+        "h": 1350,
+        "radius": 0,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -34,11 +34,11 @@
       {
         "id": "c2",
         "type": "photoCell",
-        "x": 552,
-        "y": 220,
-        "w": 468,
-        "h": 1070,
-        "radius": 24,
+        "x": 545,
+        "y": 0,
+        "w": 535,
+        "h": 1350,
+        "radius": 0,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -49,51 +49,68 @@
         "id": "s3",
         "type": "shape",
         "shape": "rect",
-        "x": 60,
-        "y": 120,
-        "w": 240,
-        "h": 72,
-        "fill": "#ef8a3f",
-        "radius": 36
+        "x": 0,
+        "y": 930,
+        "w": 1080,
+        "h": 420,
+        "radius": 0,
+        "gradient": {
+          "from": "rgba(0,0,0,0)",
+          "to": "rgba(11,26,21,0.92)",
+          "angle": 90
+        }
       },
       {
-        "id": "t4",
-        "type": "text",
-        "x": 60,
-        "y": 136,
-        "w": 240,
-        "text": "AVANT",
-        "font": "Poppins",
-        "weight": 800,
-        "size": 40,
-        "color": "#ffffff",
-        "align": "center",
-        "lineHeight": 1.15
-      },
-      {
-        "id": "s5",
+        "id": "s4",
         "type": "shape",
         "shape": "rect",
-        "x": 552,
-        "y": 120,
-        "w": 240,
-        "h": 72,
-        "fill": "#7ed6ad",
-        "radius": 36
+        "x": 72,
+        "y": 1215,
+        "w": 168,
+        "h": 63,
+        "fill": "#ef8a3f",
+        "radius": 31.5
       },
       {
-        "id": "t6",
+        "id": "t5",
         "type": "text",
-        "x": 552,
-        "y": 136,
-        "w": 240,
+        "x": 72,
+        "y": 1224.9,
+        "w": 168,
+        "text": "AVANT",
+        "font": "Poppins",
+        "weight": 600,
+        "size": 30,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.28,
+        "letterSpacing": 3.5999999999999996
+      },
+      {
+        "id": "s6",
+        "type": "shape",
+        "shape": "rect",
+        "x": 576,
+        "y": 1215,
+        "w": 168,
+        "h": 63,
+        "fill": "#7ed6ad",
+        "radius": 31.5
+      },
+      {
+        "id": "t7",
+        "type": "text",
+        "x": 576,
+        "y": 1224.9,
+        "w": 168,
         "text": "APRÈS",
         "font": "Poppins",
-        "weight": 800,
-        "size": 40,
+        "weight": 600,
+        "size": 30,
         "color": "#0f3d2e",
         "align": "center",
-        "lineHeight": 1.15
+        "lineHeight": 1.28,
+        "letterSpacing": 3.5999999999999996
       }
     ]
   }

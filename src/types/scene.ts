@@ -29,6 +29,24 @@ export interface Crop {
   scale: number;
 }
 
+/**
+ * Forme de découpe d'une cellule photo. Les points d'un polygone sont
+ * normalisés (0 → 1) dans la boîte de la cellule : deux cellules qui partagent
+ * une arête se raccordent alors au pixel près, quelle que soit leur taille.
+ */
+export type CellMask =
+  | { type: 'rect'; radius?: number }
+  | { type: 'ellipse' }
+  | { type: 'polygon'; points: number[] };
+
+export interface Shadow {
+  color: string;
+  blur: number;
+  offsetX: number;
+  offsetY: number;
+  opacity: number;
+}
+
 export interface PhotoCellElement {
   id: string;
   type: 'photoCell';
@@ -36,7 +54,14 @@ export interface PhotoCellElement {
   y: number;
   w: number;
   h: number;
+  /** Raccourci pour un masque rectangulaire arrondi. */
   radius?: number;
+  mask?: CellMask;
+  /** Rotation en degrés, autour du centre de la cellule. */
+  rotation?: number;
+  stroke?: string;
+  strokeWidth?: number;
+  shadow?: Shadow;
   assetId?: string;
   crop: Crop;
 }
@@ -49,6 +74,8 @@ export interface TextElement {
   x: number;
   y: number;
   w: number;
+  rotation?: number;
+  shadow?: Shadow;
   text: string;
   font: string;
   weight: number;
@@ -75,10 +102,14 @@ export interface ShapeElement {
   /** line : points relatifs à x / y. */
   points?: number[];
   radius?: number;
+  rotation?: number;
   fill?: string;
   stroke?: string;
   strokeWidth?: number;
   opacity?: number;
+  shadow?: Shadow;
+  /** Dégradé linéaire pour les rectangles (voiles de lisibilité). */
+  gradient?: { from: string; to: string; angle: number };
 }
 
 export type SceneElement = PhotoCellElement | TextElement | ShapeElement;

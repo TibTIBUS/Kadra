@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import type { Background, Scene } from '../types/scene';
 import { computePlacement } from './photo';
+import { shadowProps, traceCellPath, type PathSink } from './mask';
 
 export type ImageMap = Map<string, HTMLImageElement>;
 
@@ -25,34 +26,25 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
 
   for (const element of scene.elements) {
     if (element.type === 'photoCell') {
+      // Le groupe est positionné par son centre pour que la rotation tourne
+      // autour du centre de la cellule, et non de son coin.
       const group = new Konva.Group({
-        clipFunc: (ctx) => {
-          const radius = Math.min(element.radius ?? 0, element.w / 2, element.h / 2);
-          ctx.beginPath();
-          ctx.moveTo(element.x + radius, element.y);
-          ctx.arcTo(element.x + element.w, element.y, element.x + element.w, element.y + element.h, radius);
-          ctx.arcTo(
-            element.x + element.w,
-            element.y + element.h,
-            element.x,
-            element.y + element.h,
-            radius,
-          );
-          ctx.arcTo(element.x, element.y + element.h, element.x, element.y, radius);
-          ctx.arcTo(element.x, element.y, element.x + element.w, element.y, radius);
-          ctx.closePath();
-        },
+        x: element.x + element.w / 2,
+        y: element.y + element.h / 2,
+        offsetX: element.w / 2,
+        offsetY: element.h / 2,
+        rotation: element.rotation ?? 0,
+        clipFunc: (ctx) => traceCellPath(ctx as unknown as PathSink, element),
       });
 
       const image = element.assetId ? images.get(element.assetId) : undefined;
       if (image) {
-        const placement = computePlacement(element, image.naturalWidth, image.naturalHeight);
+        const local = { ...element, x: 0, y: 0 };
+        const placement = computePlacement(local, image.naturalWidth, image.naturalHeight);
         group.add(new Konva.Image({ image, ...placement }));
       } else {
         group.add(
           new Konva.Rect({
-            x: element.x,
-            y: element.y,
             width: element.w,
             height: element.h,
             fill: 'rgba(255,255,255,0.08)',
@@ -60,6 +52,26 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
         );
       }
       layer.add(group);
+
+      // Le contour est dessiné hors du groupe découpé, sinon la moitié
+      // extérieure du trait serait rognée.
+      if (element.stroke && element.strokeWidth) {
+        const outline = new Konva.Shape({
+          x: element.x + element.w / 2,
+          y: element.y + element.h / 2,
+          offsetX: element.w / 2,
+          offsetY: element.h / 2,
+          rotation: element.rotation ?? 0,
+          stroke: element.stroke,
+          strokeWidth: element.strokeWidth,
+          listening: false,
+          sceneFunc: (ctx, shape) => {
+            traceCellPath(ctx as unknown as PathSink, element);
+            ctx.strokeShape(shape);
+          },
+        });
+        layer.add(outline);
+      }
       continue;
     }
 
@@ -69,6 +81,7 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
           x: element.x,
           y: element.y,
           width: element.w,
+          rotation: element.rotation ?? 0,
           text: element.text,
           fontFamily: element.font,
           fontSize: element.size,
@@ -78,6 +91,7 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
           lineHeight: element.lineHeight ?? 1.2,
           letterSpacing: element.letterSpacing ?? 0,
           wrap: 'word',
+          ...shadowProps(element.shadow),
         }),
       );
       continue;
@@ -88,7 +102,10 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
       stroke: element.stroke,
       strokeWidth: element.strokeWidth ?? 0,
       opacity: element.opacity ?? 1,
+      rotation: element.rotation ?? 0,
+      ...shadowProps(element.shadow),
     };
+
     if (element.shape === 'circle') {
       layer.add(new Konva.Circle({ x: element.x, y: element.y, radius: element.r ?? 40, ...common }));
     } else if (element.shape === 'line') {
@@ -101,19 +118,35 @@ export function drawScene(layer: Konva.Layer, scene: Scene, images: ImageMap): v
           strokeWidth: element.strokeWidth ?? 8,
           lineCap: 'round',
           opacity: element.opacity ?? 1,
+          rotation: element.rotation ?? 0,
+          ...shadowProps(element.shadow),
         }),
       );
     } else {
-      layer.add(
-        new Konva.Rect({
-          x: element.x,
-          y: element.y,
-          width: element.w ?? 100,
-          height: element.h ?? 100,
-          cornerRadius: element.radius ?? 0,
-          ...common,
-        }),
-      );
+      const width = element.w ?? 100;
+      const height = element.h ?? 100;
+      // Comme les cellules photo, un rectangle tourne autour de son centre :
+      // deux éléments superposés restent alignés quand on les fait pivoter.
+      const rect = new Konva.Rect({
+        x: element.x + width / 2,
+        y: element.y + height / 2,
+        offsetX: width / 2,
+        offsetY: height / 2,
+        width,
+        height,
+        cornerRadius: element.radius ?? 0,
+        ...common,
+      });
+      if (element.gradient) {
+        const radians = (element.gradient.angle * Math.PI) / 180;
+        rect.fillLinearGradientStartPoint({ x: 0, y: 0 });
+        rect.fillLinearGradientEndPoint({
+          x: Math.cos(radians) * (element.w ?? 100),
+          y: Math.sin(radians) * (element.h ?? 100),
+        });
+        rect.fillLinearGradientColorStops([0, element.gradient.from, 1, element.gradient.to]);
+      }
+      layer.add(rect);
     }
   }
 }

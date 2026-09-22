@@ -1,8 +1,8 @@
 {
-  "id": "carrousel-fil-conducteur",
+  "id": "carrousel-fil",
   "name": "Fil conducteur",
   "category": "carousel",
-  "description": "Une ligne menthe traverse les trois slides et relie les photos.",
+  "description": "Une ligne traverse les trois slides et relie les photos en quinconce.",
   "slideCount": 3,
   "formats": [
     "carousel_portrait",
@@ -30,16 +30,16 @@
           0
         ],
         "stroke": "#7ed6ad",
-        "strokeWidth": 10
+        "strokeWidth": 5
       },
       {
         "id": "c2",
         "type": "photoCell",
-        "x": 60,
-        "y": 60,
-        "w": 960,
-        "h": 575,
-        "radius": 24,
+        "x": 72,
+        "y": 72,
+        "w": 936,
+        "h": 563,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -49,11 +49,11 @@
       {
         "id": "c3",
         "type": "photoCell",
-        "x": 1140,
+        "x": 1152,
         "y": 715,
-        "w": 960,
-        "h": 575,
-        "radius": 24,
+        "w": 936,
+        "h": 563,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -63,11 +63,11 @@
       {
         "id": "c4",
         "type": "photoCell",
-        "x": 2220,
-        "y": 60,
-        "w": 960,
-        "h": 575,
-        "radius": 24,
+        "x": 2232,
+        "y": 72,
+        "w": 936,
+        "h": 563,
+        "radius": 6,
         "crop": {
           "offsetX": 0,
           "offsetY": 0,
@@ -80,7 +80,7 @@
         "shape": "circle",
         "x": 540,
         "y": 675,
-        "r": 22,
+        "r": 16,
         "fill": "#ef8a3f"
       },
       {
@@ -89,7 +89,7 @@
         "shape": "circle",
         "x": 1620,
         "y": 675,
-        "r": 22,
+        "r": 16,
         "fill": "#ef8a3f"
       },
       {
@@ -98,7 +98,7 @@
         "shape": "circle",
         "x": 2700,
         "y": 675,
-        "r": 22,
+        "r": 16,
         "fill": "#ef8a3f"
       }
     ]
